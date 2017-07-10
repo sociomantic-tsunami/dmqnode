@@ -326,7 +326,7 @@ struct ChannelMetadata
     private void reset_ ( )
     out
     {
-        assert(&this); // invariant
+        assert(this); // invariant
     }
     body
     {
