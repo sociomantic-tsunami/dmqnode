@@ -263,7 +263,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    private ChannelMetadata[istring] channels;
+    private ChannelMetadata[cstring] channels;
 
     /***************************************************************************
 
@@ -1093,7 +1093,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    public int iterateChannelNames ( int delegate ( ref istring name ) dg )
+    public int iterateChannelNames ( int delegate ( ref cstring name ) dg )
     {
         foreach (name, metadata; this.channels)
         {
