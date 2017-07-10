@@ -188,6 +188,14 @@ interface DiskOverflowInfo
     ulong num_bytes ( );
 }
 
+/***************************************************************************
+
+    Exceptions thrown in DiskOverflow.
+
+***************************************************************************/
+
+class DiskOverflowException: Exception {this ( ) {super(null);}}
+
 /******************************************************************************/
 
 class DiskOverflow: DiskOverflowInfo
@@ -323,21 +331,11 @@ class DiskOverflow: DiskOverflowInfo
 
     /***************************************************************************
 
-        DiskOverflow.Exception class.
-
-    ***************************************************************************/
-
-    static class Exception: Exception_ {this ( ) {super(null);}}
-
-    alias .Exception Exception_;
-
-    /***************************************************************************
-
         Reusable exception.
 
     ***************************************************************************/
 
-    private typeof(this).Exception e;
+    private DiskOverflowException e;
 
     /**************************************************************************/
 
@@ -479,7 +477,7 @@ class DiskOverflow: DiskOverflowInfo
             log.error("Error testing file truncation: {}", getMsg(e));
         }
 
-        this.e     = new Exception;
+        this.e     = new DiskOverflowException;
         this.data  = new DataFile(dir, Const.datafile_name);
         this.index = new IndexFile(dir, Const.indexfile_name);
 
