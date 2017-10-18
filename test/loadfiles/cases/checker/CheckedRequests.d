@@ -350,10 +350,7 @@ class Consume: RecordChecker
     {
         with (info) switch (active)
         {
-            case active.started,
-                 active.stopped,
-                 active.suspended,
-                 active.resumed:
+            case active.stopped:
                 break;
 
             case active.received:

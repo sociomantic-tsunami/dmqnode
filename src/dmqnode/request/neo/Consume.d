@@ -54,7 +54,13 @@ public void handle ( Object shared_resources, RequestOnConn connection,
 
         case 2:
             scope rq_resources = dmq_shared_resources.new RequestResources;
-            scope rq = new ConsumeImpl_v2(rq_resources);
+            scope rq = new ConsumeImpl_v2or3!(2)(rq_resources);
+            rq.handle(connection, msg_payload);
+            break;
+
+        case 3:
+            scope rq_resources = dmq_shared_resources.new RequestResources;
+            scope rq = new ConsumeImpl_v2or3!(3)(rq_resources);
             rq.handle(connection, msg_payload);
             break;
 
@@ -197,11 +203,28 @@ public scope class ConsumeImpl_v1 : ConsumeProtocol_v1, StorageEngine.IConsumer
 
 /*******************************************************************************
 
-    DMQ node implementation of the v2 Consume request protocol.
+    Evaluates to `ConsumeProtocol_v2` or `ConsumeProtocol_v3` according to `v`
+    which should be either 2 or 3.
 
 *******************************************************************************/
 
-public scope class ConsumeImpl_v2 : ConsumeProtocol_v2, StorageEngine.IConsumer
+private template ConsumeProtocol_v2or3 ( uint v )
+{
+    static if (v == 2)
+        alias ConsumeProtocol_v2 ConsumeProtocol_v2or3;
+    else static if (v == 3)
+        alias ConsumeProtocol_v3 ConsumeProtocol_v2or3;
+}
+
+/*******************************************************************************
+
+    DMQ node implementation of the v2/v3 Consume request protocol.
+    `ver` is the protocol version, 2 or 3.
+
+*******************************************************************************/
+
+public scope class ConsumeImpl_v2or3 ( uint v ) :
+    ConsumeProtocol_v2or3!(v), StorageEngine.IConsumer
 {
     private SharedResources.RequestResources resources;
 
@@ -313,6 +336,14 @@ public scope class ConsumeImpl_v2 : ConsumeProtocol_v2, StorageEngine.IConsumer
             case DataReady:
                 this.dataReady();
                 break;
+
+            static if (v == 3)
+            {
+                case Flush:
+                    this.flushBatch();
+                    break;
+            }
+
             case Finish:
                 this.channelRemoved();
                 break;
