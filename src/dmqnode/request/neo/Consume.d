@@ -46,21 +46,9 @@ public void handle ( Object shared_resources, RequestOnConn connection,
 
     switch ( cmdver )
     {
-        case 1:
-            scope rq_resources = dmq_shared_resources.new RequestResources;
-            scope rq = new ConsumeImpl_v1(rq_resources);
-            rq.handle(connection, msg_payload);
-            break;
-
-        case 2:
-            scope rq_resources = dmq_shared_resources.new RequestResources;
-            scope rq = new ConsumeImpl_v2or3!(2)(rq_resources);
-            rq.handle(connection, msg_payload);
-            break;
-
         case 3:
             scope rq_resources = dmq_shared_resources.new RequestResources;
-            scope rq = new ConsumeImpl_v2or3!(3)(rq_resources);
+            scope rq = new ConsumeImpl_v3(rq_resources);
             rq.handle(connection, msg_payload);
             break;
 
@@ -78,153 +66,11 @@ public void handle ( Object shared_resources, RequestOnConn connection,
 
 /*******************************************************************************
 
-    DMQ node implementation of the v0 Consume request protocol.
+    DMQ node implementation of the v3 Consume request protocol.
 
 *******************************************************************************/
 
-public scope class ConsumeImpl_v1 : ConsumeProtocol_v1, StorageEngine.IConsumer
-{
-    private SharedResources.RequestResources resources;
-
-    /***************************************************************************
-
-        Storage engine being consumed from.
-
-    ***************************************************************************/
-
-    private StorageEngine storage_engine;
-
-    /***************************************************************************
-
-        Constructor.
-
-        Params:
-            resources = shared resource acquirer
-
-    ***************************************************************************/
-
-    public this ( SharedResources.RequestResources resources )
-    {
-        super(resources);
-
-        this.resources = resources;
-    }
-
-    /***************************************************************************
-
-        Performs any logic needed to start consuming from the channel of the
-        given name.
-
-        Params:
-            channel_name = channel to consume from
-
-        Returns:
-            `true` if the channel may be used
-
-    ***************************************************************************/
-
-    override protected bool prepareChannel ( cstring channel_name )
-    {
-        if (auto channel = this.resources.storage_channels.getCreate(channel_name))
-        {
-            this.storage_engine = channel.subscribe("");
-
-            if ( this.storage_engine !is null )
-            {
-                this.storage_engine.registerConsumer(this);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /***************************************************************************
-
-        Performs any logic needed to stop consuming from the channel of the
-        given name.
-
-        Params:
-            channel_name = channel to stop consuming from
-
-    ***************************************************************************/
-
-    override protected void stopConsumingChannel ( cstring channel_name )
-    {
-        this.storage_engine.unregisterConsumer(this);
-    }
-
-    /***************************************************************************
-
-        Retrieve the next value from the channel, if available.
-
-        Params:
-            value = buffer to write the value into
-
-        Returns:
-            `true` if there was a value in the channel, false if the channel is
-            empty
-
-    ***************************************************************************/
-
-    override protected bool getNextValue ( ref void[] value )
-    {
-        auto mstring_value = castFrom!(void[]*).to!(mstring*)(&value);
-        this.storage_engine.pop(*mstring_value);
-
-        return value.length > 0;
-    }
-
-    /***************************************************************************
-
-        StorageEngine.IConsumer method, called when new data arrives or the
-        channel is deleted.
-
-        Params:
-            code = trigger event code
-
-    ***************************************************************************/
-
-    override public void trigger ( Code code )
-    {
-        with ( Code ) switch ( code )
-        {
-            case DataReady:
-                this.dataReady();
-                break;
-            case Finish:
-                this.channelRemoved();
-                break;
-            default:
-                break;
-        }
-    }
-}
-
-/*******************************************************************************
-
-    Evaluates to `ConsumeProtocol_v2` or `ConsumeProtocol_v3` according to `v`
-    which should be either 2 or 3.
-
-*******************************************************************************/
-
-private template ConsumeProtocol_v2or3 ( uint v )
-{
-    static if (v == 2)
-        alias ConsumeProtocol_v2 ConsumeProtocol_v2or3;
-    else static if (v == 3)
-        alias ConsumeProtocol_v3 ConsumeProtocol_v2or3;
-}
-
-/*******************************************************************************
-
-    DMQ node implementation of the v2/v3 Consume request protocol.
-    `ver` is the protocol version, 2 or 3.
-
-*******************************************************************************/
-
-public scope class ConsumeImpl_v2or3 ( uint v ) :
-    ConsumeProtocol_v2or3!(v), StorageEngine.IConsumer
+public scope class ConsumeImpl_v3 : ConsumeProtocol_v3, StorageEngine.IConsumer
 {
     private SharedResources.RequestResources resources;
 
@@ -337,12 +183,9 @@ public scope class ConsumeImpl_v2or3 ( uint v ) :
                 this.dataReady();
                 break;
 
-            static if (v == 3)
-            {
-                case Flush:
-                    this.flushBatch();
-                    break;
-            }
+            case Flush:
+                this.flushBatch();
+                break;
 
             case Finish:
                 this.channelRemoved();
