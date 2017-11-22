@@ -44,7 +44,7 @@ class IndexFile: PosixFile
 
     ***************************************************************************/
 
-    public static const signals_dontblock = [SIGABRT, SIGSEGV, SIGBUS, SIGILL];
+    public const signals_dontblock = [SIGABRT, SIGSEGV, SIGBUS, SIGILL];
 
     /***************************************************************************
 
@@ -168,7 +168,7 @@ class IndexFile: PosixFile
                 default:
                     this.enforce(!feof(this.stream), "Unexpected end of file",
                                  "feof", this.name, nline);
-                    static const char[][] errmsg =
+                    auto errmsg =
                     [
                         "Invalid channel name"[],
                         "Invalid number of records",

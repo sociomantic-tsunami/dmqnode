@@ -144,7 +144,7 @@ public class DmqNode
 
     ***************************************************************************/
 
-    override protected char[] id ( )
+    override protected cstring id ( )
     {
         return typeof(this).stringof;
     }

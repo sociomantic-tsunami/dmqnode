@@ -58,7 +58,7 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public static const head_truncation_chunk_size = 1 << 20;
+    public const head_truncation_chunk_size = 1 << 20;
 
     /***************************************************************************
 
