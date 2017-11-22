@@ -67,7 +67,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    static private const char[] DumpFileSuffix = ".rq"; // Must be char[] because of DMD bug 12634.
+    const istring DumpFileSuffix = ".rq";
 
 
     /***************************************************************************
@@ -796,7 +796,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    override public char[] type ( )
+    override public cstring type ( )
     {
         return Ring.stringof;
     }

@@ -14,18 +14,19 @@ module dmqnode.storage.engine.overflow.Const;
 
 struct Const
 {
+    import ocean.transition;
+
     /***************************************************************************
 
         File names and suffices.
 
     ***************************************************************************/
 
-    // Must be char[] because of DMD bug 12634.
-
-    static const char[] datafile_suffix  = ".dat",
-                        datafile_name    = "overflow" ~ datafile_suffix,
-                        indexfile_suffix = ".csv",
-                        indexfile_name   = "ofchannels" ~ indexfile_suffix;
+    const istring
+        datafile_suffix  = ".dat",
+        datafile_name    = "overflow" ~ datafile_suffix,
+        indexfile_suffix = ".csv",
+        indexfile_name   = "ofchannels" ~ indexfile_suffix;
 
     /***************************************************************************
 
@@ -34,5 +35,5 @@ struct Const
 
     ***************************************************************************/
 
-    static const char[8] datafile_id = "QDSKOF01";
+    static Immut!(char[8]) datafile_id = "QDSKOF01";
 }
