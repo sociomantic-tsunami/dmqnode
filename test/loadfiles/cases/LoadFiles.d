@@ -71,7 +71,7 @@ class LoadFiles: TestCase
             theScheduler.epoll, "test", Key.init.content, &connect.notifier
         );
 
-        dmq.neo.addNode("127.0.0.1", 10001);
+        dmq.neo.addNode("127.0.0.1", 11001);
         connect.connect(dmq);
     }
 
