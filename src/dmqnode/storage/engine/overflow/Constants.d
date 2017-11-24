@@ -10,9 +10,9 @@
 
 *******************************************************************************/
 
-module dmqnode.storage.engine.overflow.Const;
+module dmqnode.storage.engine.overflow.Constants;
 
-struct Const
+struct Constants
 {
     import ocean.transition;
 

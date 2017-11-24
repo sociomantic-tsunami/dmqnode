@@ -18,7 +18,7 @@ import ocean.transition;
 
 struct ChannelMetadata
 {
-    import dmqnode.storage.engine.overflow.Const;
+    import dmqnode.storage.engine.overflow.Constants;
     import Tracker = dmqnode.storage.engine.overflow.FirstOffsetTracker;
 
     import ocean.core.Enforce: enforce;
@@ -266,7 +266,7 @@ struct ChannelMetadata
                 break;
         }
 
-        check(channel.first_offset >= Const.datafile_id.length, "first_offset before end of data file ID");
+        check(channel.first_offset >= Constants.datafile_id.length, "first_offset before end of data file ID");
     }
 
     /***************************************************************************
