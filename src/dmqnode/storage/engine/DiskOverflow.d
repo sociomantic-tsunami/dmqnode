@@ -201,7 +201,7 @@ class DiskOverflowException: Exception {this ( ) {super(null);}}
 class DiskOverflow: DiskOverflowInfo
 {
     import dmqnode.storage.engine.overflow.ChannelMetadata;
-    import QConst = dmqnode.storage.engine.overflow.Const;
+    import dmqnode.storage.engine.overflow.Constants;
     import dmqnode.storage.engine.overflow.file.DataFile;
     import dmqnode.storage.engine.overflow.file.FileException;
     import dmqnode.storage.engine.overflow.file.HeadTruncationTestFile;
@@ -405,15 +405,6 @@ class DiskOverflow: DiskOverflowInfo
 
     /***************************************************************************
 
-        Import constant definitions into this namespace:
-        File names and suffices and the data file ID string.
-
-    ***************************************************************************/
-
-    alias QConst.Const Const;
-
-    /***************************************************************************
-
         Logger
 
     ***************************************************************************/
@@ -480,8 +471,8 @@ class DiskOverflow: DiskOverflowInfo
         }
 
         this.e     = new DiskOverflowException;
-        this.data  = new DataFile(dir, Const.datafile_name);
-        this.index = new IndexFile(dir, Const.indexfile_name);
+        this.data  = new DataFile(dir, Constants.datafile_name);
+        this.index = new IndexFile(dir, Constants.indexfile_name);
 
         this.initChannels(this.verifyDataFileId());
     }
@@ -606,7 +597,7 @@ class DiskOverflow: DiskOverflowInfo
          * Make sure the file position never interferes with the ID string at
          * the beginning of the data file.
          */
-        assert(pos >= Const.datafile_id.length);
+        assert(pos >= Constants.datafile_id.length);
     }
     body
     {
@@ -622,13 +613,13 @@ class DiskOverflow: DiskOverflowInfo
 
         if (this.records)
         {
-            this.data.enforce(pos >= Const.datafile_id.length, "File size less than length of ID string");
+            this.data.enforce(pos >= Constants.datafile_id.length, "File size less than length of ID string");
         }
         else
         {
             this.data.enforce(!pos, "File expected to be empty");
-            this.data.transmit(Const.datafile_id, &write, "Unable to write the data file ID");
-            pos = Const.datafile_id.length;
+            this.data.transmit(Constants.datafile_id, &write, "Unable to write the data file ID");
+            pos = Constants.datafile_id.length;
         }
 
         return pos;
@@ -1128,7 +1119,7 @@ class DiskOverflow: DiskOverflowInfo
     }
     body
     {
-        char[Const.datafile_id.length] datafile_id;
+        char[Constants.datafile_id.length] datafile_id;
 
         if (auto rem = this.data.transmit(datafile_id, &read, "unable to read the file ID"))
         {
@@ -1142,7 +1133,7 @@ class DiskOverflow: DiskOverflowInfo
         }
         else
         {
-            this.data.enforce(datafile_id == Const.datafile_id, "File ID mismatch");
+            this.data.enforce(datafile_id == Constants.datafile_id, "File ID mismatch");
             return this.data.seek(0, SEEK_END, "unable to initially seek to the end of the file");
         }
     }
@@ -1152,10 +1143,10 @@ class DiskOverflow: DiskOverflowInfo
         Miminizes the size of the data file by truncating the beginning of the
         file, as follows:
         The data file starts with an 8-byte identifier string,
-        `Const.datafile_id`, and the records follow that string. After records
-        have been popped, there may be a contiguous range of already popped
-        records between the identifier string and the first record in the data
-        file that hasn't been popped yet. If such a range exists then this
+        `Constants.datafile_id`, and the records follow that string. After
+        records have been popped, there may be a contiguous range of already
+        popped records between the identifier string and the first record in the
+        data file that hasn't been popped yet. If such a range exists then this
         method will
          - truncate the data file from the beginning, removing the largest
            integer multiple of `DataFile.head_truncation_chunk_size` (1 MiB)
@@ -1227,16 +1218,16 @@ class DiskOverflow: DiskOverflowInfo
          * datafile_id.length + RecordHeader.sizeof otherwise.
          */
         auto bytes_cutoff = cast(ulong)channel.first_offset;
-        if (bytes_cutoff == Const.datafile_id.length)
+        if (bytes_cutoff == Constants.datafile_id.length)
             return 0;
 
-        assert(bytes_cutoff >= (Const.datafile_id.length + RecordHeader.sizeof));
+        assert(bytes_cutoff >= (Constants.datafile_id.length + RecordHeader.sizeof));
 
         /*
          * Subtract (datafile_id.length + RecordHeader.sizeof), the extra space
          * needed at the beginning if truncating the file.
          */
-        bytes_cutoff -= (Const.datafile_id.length + RecordHeader.sizeof);
+        bytes_cutoff -= (Constants.datafile_id.length + RecordHeader.sizeof);
 
         /*
          * Now bytes_cutoff is the maximum number of bytes that can be
@@ -1276,7 +1267,7 @@ class DiskOverflow: DiskOverflowInfo
         off_t pos = 0;
 
         this.data.transmit(
-            Const.datafile_id, pos, &pwrite,
+            Constants.datafile_id, pos, &pwrite,
             "unable to write the file ID after data file truncation"
         );
 
@@ -1319,7 +1310,7 @@ class DiskOverflow: DiskOverflowInfo
         /*
          * Check the data file id.
          */
-        char[Const.datafile_id.length] datafile_id;
+        char[Constants.datafile_id.length] datafile_id;
         this.data.enforce(
             !this.data.transmit(
                 datafile_id, pos, &pread, "unable to read the data file id"

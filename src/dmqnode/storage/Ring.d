@@ -882,8 +882,8 @@ public class RingNode : StorageChannels
                                     info.name);
                             break;
 
-                        case this.overflow.Const.datafile_suffix,
-                             this.overflow.Const.indexfile_suffix:
+                        case this.overflow.Constants.datafile_suffix,
+                             this.overflow.Constants.indexfile_suffix:
                             break;
 
                         default:
