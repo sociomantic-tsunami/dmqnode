@@ -84,5 +84,6 @@ private class LoadFilesTestRunner : TurtleRunnerTask!(TestedAppKind.Daemon)
 
 int main ( istring[] args )
 {
-    return (new TurtleRunner!(LoadFilesTestRunner)("dmqnode")).main(args);
+    return (new TurtleRunner!(LoadFilesTestRunner)("dmqnode",
+        "test.loadfiles.cases", "loadfiles_test")).main(args);
 }
