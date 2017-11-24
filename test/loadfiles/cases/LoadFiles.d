@@ -47,7 +47,7 @@ class LoadFiles: TestCase
     import ocean.task.Scheduler;
     import ocean.task.Task;
     import Test = ocean.core.Test;
-    import ocean.util.log.Log;
+    import ocean.util.log.Logger;
     import ocean.transition;
 
     /***************************************************************************

@@ -31,7 +31,7 @@ import core.sys.posix.sys.stat: stat_t, fstat;
 import core.stdc.stdio: SEEK_CUR;
 import core.stdc.stdlib: EXIT_SUCCESS, EXIT_FAILURE;
 import ocean.transition: getMsg;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 
 /*******************************************************************************
 

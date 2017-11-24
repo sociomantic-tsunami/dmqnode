@@ -14,7 +14,7 @@ module test.loadfiles.main;
 
 import test.loadfiles.cases.LoadFiles;
 import turtle.runner.Runner;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 import ocean.transition;
 
 /*******************************************************************************

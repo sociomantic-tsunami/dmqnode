@@ -210,7 +210,7 @@ class DiskOverflow: DiskOverflowInfo
     import core.sys.posix.unistd: read, pread, write, pwrite;
     import core.stdc.stdio: SEEK_CUR, SEEK_END;
     import ocean.transition;
-    import ocean.util.log.Log;
+    import ocean.util.log.Logger;
 
     /***************************************************************************
 
