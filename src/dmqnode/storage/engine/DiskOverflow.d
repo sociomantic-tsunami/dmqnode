@@ -214,8 +214,6 @@ class DiskOverflow: DiskOverflowInfo
     import ocean.io.FilePath;
     import core.stdc.errno: errno;
     import core.sys.posix.sys.types: off_t;
-    import core.sys.posix.sys.uio: iovec, writev;
-    import core.sys.posix.unistd: read, pread, write, pwrite;
     import core.stdc.stdio: SEEK_CUR, SEEK_END;
     import ocean.transition;
     import ocean.util.log.Log;
@@ -544,7 +542,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    package void push ( ref ChannelMetadata channel, void[] data )
+    package void push ( ref ChannelMetadata channel, in void[] data )
     in
     {
         assert(&channel);
@@ -618,7 +616,7 @@ class DiskOverflow: DiskOverflowInfo
         else
         {
             this.data.enforce(!pos, "File expected to be empty");
-            this.data.transmit(Constants.datafile_id, &write, "Unable to write the data file ID");
+            this.data.write(Constants.datafile_id, "Unable to write the data file ID");
             pos = Constants.datafile_id.length;
         }
 
@@ -663,8 +661,8 @@ class DiskOverflow: DiskOverflowInfo
         /*
          * Write the updated header back.
          */
-        this.data.transmit(
-            this.dump(last_header), last_offset, &pwrite,
+        this.data.pwrite(
+            this.dump(last_header), last_offset,
             "push: unable to update last record"
         );
     }
@@ -686,7 +684,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    private RecordHeader writeRecord ( uint channel_id, void[] data )
+    private RecordHeader writeRecord ( uint channel_id, in void[] data )
     {
         /*
          * Set up the header for the new record, make a copy for the next push
@@ -697,12 +695,12 @@ class DiskOverflow: DiskOverflowInfo
         header.length  = data.length;
         header.setParity();
 
-        iovec[2] iov_buf;
+        IoVec.iovec_const[2] iov_buf;
         auto iov = IoVec(iov_buf);
         iov[0]   = this.dump(header);
         iov[1]   = data;
 
-        this.data.transmit(iov, &writev, "unable to write record");
+        this.data.writev(iov, "unable to write record");
 
         return header;
     }
@@ -757,7 +755,7 @@ class DiskOverflow: DiskOverflowInfo
         assert(data.length == header.length, "pop: array returned by get_buffer not of requested size");
 
         this.data.enforce(
-            !this.data.transmit(data, pos, &pread, "unable to read record data"),
+            !this.data.pread(data, pos, "unable to read record data"),
             "Unexpected end of file reading record data."
         );
 
@@ -1025,7 +1023,7 @@ class DiskOverflow: DiskOverflowInfo
         auto start = pos;
 
         this.data.enforce(
-            !this.data.transmit(this.dump(header), pos, &pread, "unable to read record header"),
+            !this.data.pread(this.dump(header), pos, "unable to read record header"),
             "Unexpected end of file reading record header."
         );
 
@@ -1121,7 +1119,7 @@ class DiskOverflow: DiskOverflowInfo
     {
         char[Constants.datafile_id.length] datafile_id;
 
-        if (auto rem = this.data.transmit(datafile_id, &read, "unable to read the file ID"))
+        if (auto rem = this.data.read(datafile_id, "unable to read the file ID"))
         {
             /*
              * rem is datafile_id.length minus the number of bytes read before
@@ -1266,8 +1264,8 @@ class DiskOverflow: DiskOverflowInfo
          */
         off_t pos = 0;
 
-        this.data.transmit(
-            Constants.datafile_id, pos, &pwrite,
+        this.data.pwrite(
+            Constants.datafile_id, pos,
             "unable to write the file ID after data file truncation"
         );
 
@@ -1283,8 +1281,8 @@ class DiskOverflow: DiskOverflowInfo
         header.length = first_offset - header.sizeof - pos;
         header.setParity();
 
-        this.data.transmit(
-            this.dump(header), pos, &pwrite,
+        this.data.pwrite(
+            this.dump(header), pos,
             "unable to write the spare record header"
         );
 
@@ -1312,8 +1310,8 @@ class DiskOverflow: DiskOverflowInfo
          */
         char[Constants.datafile_id.length] datafile_id;
         this.data.enforce(
-            !this.data.transmit(
-                datafile_id, pos, &pread, "unable to read the data file id"
+            !this.data.pread(
+                datafile_id, pos, "unable to read the data file id"
             ),
             "Unexpected end of file reading the data file id."
         );
@@ -1323,8 +1321,8 @@ class DiskOverflow: DiskOverflowInfo
          */
         RecordHeader dummy_record_header;
         this.data.enforce(
-            !this.data.transmit(
-                this.dump(dummy_record_header), pos, &pread,
+            !this.data.pread(
+                this.dump(dummy_record_header), pos,
                 "unable to read the dummy record header"
             ),
             "Unexpected end of file reading the dummy record header."
