@@ -575,7 +575,7 @@ unittest
         bool flushed, cleared, closed, recycled;
         uint records, bytes;
 
-        this ( char[] id ) { super(id); }
+        this ( cstring id ) { super(id); }
 
         override void rename ( cstring ch ) { this.initialise(ch); }
         override cstring storage_name ( ) { return this.id; }

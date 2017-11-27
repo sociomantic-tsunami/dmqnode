@@ -42,7 +42,7 @@ import ocean.transition;
 *******************************************************************************/
 
 public void handle ( Object shared_resources, RequestOnConn connection,
-    Command.Version cmdver, void[] msg_payload )
+    Command.Version cmdver, Const!(void)[] msg_payload )
 {
     auto dmq_shared_resources = downcast!(SharedResources)(shared_resources);
     assert(dmq_shared_resources);

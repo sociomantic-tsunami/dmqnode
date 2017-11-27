@@ -35,7 +35,7 @@ class PosixFile
 
     ***************************************************************************/
 
-    public char[] name;
+    public Immut!(char[]) name;
 
     /***************************************************************************
 
@@ -43,7 +43,7 @@ class PosixFile
 
     ***************************************************************************/
 
-    protected char* namec;
+    protected Immut!(char*) namec;
 
     /***************************************************************************
 
@@ -84,10 +84,12 @@ class PosixFile
 
     ***************************************************************************/
 
-    public this ( char[] dir, char[] name )
+    public this ( cstring dir, cstring name )
     {
-        char[] fullname = FilePath.join(dir, name) ~ '\0';
-        this.fd = this.open(fullname.ptr);
+        mstring mfullname = FilePath.join(dir, name).dup ~ '\0';
+        this.fd = this.open(mfullname.ptr);
+
+        istring fullname = assumeUnique(mfullname);
         this.namec = fullname.ptr;
         this.name = fullname[0 .. $ - 1];
 
@@ -132,8 +134,8 @@ class PosixFile
 
     ***************************************************************************/
 
-    public ulong seek ( off_t offset, int whence, char[] errmsg,
-                        char[] file = __FILE__, long line = __LINE__ )
+    public ulong seek ( off_t offset, int whence, cstring errmsg,
+                        istring file = __FILE__, long line = __LINE__ )
     in
     {
         assert(this.fd >= 0, "File " ~ this.name ~ " not opened");

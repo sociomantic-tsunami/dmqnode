@@ -64,7 +64,7 @@ public class ProduceMultiRequest : Protocol.ProduceMulti
 
     ***************************************************************************/
 
-    override protected void pushRecord ( char[][] channel_names, char[] value )
+    override protected void pushRecord ( in cstring[] channel_names, cstring value )
     {
         foreach ( channel; channel_names )
         {

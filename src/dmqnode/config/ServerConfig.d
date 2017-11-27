@@ -15,6 +15,8 @@ module dmqnode.config.ServerConfig;
 
 import ConfigReader = ocean.util.config.ConfigFiller;
 
+import ocean.transition;
+
 /*******************************************************************************
 
     Server config values
@@ -35,7 +37,7 @@ public class ServerConfig
 
     ConfigReader.Required!(ConfigReader.Min!(ulong, 1)) channel_size_limit;
 
-    char[] data_dir = "data";
+    istring data_dir = "data";
 
     uint connection_limit = 5000;
 

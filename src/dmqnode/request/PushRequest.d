@@ -62,7 +62,7 @@ public scope class PushRequest : Protocol.Push
         this.resources = resources;
     }
 
-    override protected bool prepareChannel ( char[] channel_name )
+    override protected bool prepareChannel ( cstring channel_name )
     {
         this.storage_channel = this.resources.storage_channels.getCreate(
             channel_name);
@@ -79,7 +79,7 @@ public scope class PushRequest : Protocol.Push
 
     ***************************************************************************/
 
-    override protected void pushValue ( char[] channel_name, void[] value )
+    override protected void pushValue ( cstring channel_name, in void[] value )
     {
         assert (this.storage_channel);
         // legacy char[] values :(

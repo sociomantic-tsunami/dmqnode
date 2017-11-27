@@ -94,7 +94,7 @@ public scope class ConsumeRequest : Protocol.Consume, StorageEngine.IConsumer
 
     ***************************************************************************/
 
-    override protected bool prepareChannel ( char[] channel_name )
+    override protected bool prepareChannel ( cstring channel_name )
     {
         if (auto channel = this.resources.storage_channels.getCreate(channel_name))
         {
@@ -122,7 +122,7 @@ public scope class ConsumeRequest : Protocol.Consume, StorageEngine.IConsumer
 
     ***************************************************************************/
 
-    override protected bool getNextValue ( char[] channel_name, ref char[] value )
+    override protected bool getNextValue ( cstring channel_name, ref char[] value )
     {
         // Consume any records which are ready
         if (this.storage_channel.num_records > 0)

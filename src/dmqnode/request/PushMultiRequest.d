@@ -65,7 +65,7 @@ public scope class PushMultiRequest : Protocol.PushMulti
 
     ***************************************************************************/
 
-    override protected bool prepareChannels ( char[][] channel_names )
+    override protected bool prepareChannels ( in cstring[] channel_names )
     {
         foreach (channel; channel_names)
         {
@@ -90,7 +90,7 @@ public scope class PushMultiRequest : Protocol.PushMulti
 
     ***************************************************************************/
 
-    override protected void pushValue ( char[] channel_name, void[] value )
+    override protected void pushValue ( cstring channel_name, in void[] value )
     {
         auto channel = this.resources.storage_channels.getCreate(channel_name);
         assert (channel !is null); // already verified in this.prepareChannels

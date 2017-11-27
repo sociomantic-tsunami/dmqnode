@@ -74,7 +74,7 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public this ( char[] dir, char[] name )
+    public this ( cstring dir, cstring name )
     {
         super(dir, name);
     }
@@ -112,8 +112,9 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public size_t transmit ( void[] data, ref off_t pos, typeof(&pwrite) op, char[] errmsg,
-                             char[] file = __FILE__, long line = __LINE__ )
+    public size_t transmit ( void[] data, ref off_t pos, typeof(&pwrite) op,
+                             cstring errmsg,
+                             istring file = __FILE__, long line = __LINE__ )
     in
     {
         assert(pos >= 0);
@@ -170,8 +171,8 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public size_t transmit ( void[] data, typeof(&write) op, char[] errmsg,
-                             char[] file = __FILE__, long line = __LINE__ )
+    public size_t transmit ( void[] data, typeof(&write) op, cstring errmsg,
+                             istring file = __FILE__, long line = __LINE__ )
     out (n)
     {
         assert(n <= data.length);
@@ -225,8 +226,8 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public size_t transmit ( ref IoVec data, typeof(&writev) op, char[] errmsg,
-                             char[] file = __FILE__, long line = __LINE__ )
+    public size_t transmit ( ref IoVec data, typeof(&writev) op, cstring errmsg,
+                             istring file = __FILE__, long line = __LINE__ )
     {
         while (data.length)
         {
@@ -268,7 +269,7 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     public ulong truncateHead ( ulong n,
-                                char[] file = __FILE__, long line = __LINE__ )
+                                istring file = __FILE__, long line = __LINE__ )
     {
         if (n < this.head_truncation_chunk_size)
             return 0;
@@ -308,7 +309,7 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     public void zeroRange ( off_t start, off_t len,
-                            char[] file = __FILE__, long line = __LINE__ )
+                            istring file = __FILE__, long line = __LINE__ )
     {
         this.allocate(
                 FALLOC_FL.ZERO_RANGE, start, len,
@@ -332,8 +333,8 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     protected void allocate ( FALLOC_FL mode, off_t offset, off_t len,
-                              char[] errmsg,
-                              char[] file = __FILE__, long line = __LINE__ )
+                              cstring errmsg,
+                              istring file = __FILE__, long line = __LINE__ )
     {
         this.enforce(
             !this.restartInterrupted(.fallocate(this.fd, mode, offset, len)),

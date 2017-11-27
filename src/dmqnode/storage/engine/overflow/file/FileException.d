@@ -18,6 +18,7 @@ import ocean.sys.ErrnoException;
 class FileException: ErrnoException
 {
     import ocean.stdc.string: memmove;
+    import ocean.transition;
 
     /***************************************************************************
 
@@ -26,7 +27,7 @@ class FileException: ErrnoException
 
     ***************************************************************************/
 
-    public char[] filename;
+    public Immut!(char[]) filename;
 
     /***************************************************************************
 
@@ -38,7 +39,7 @@ class FileException: ErrnoException
 
     ***************************************************************************/
 
-    public this ( char[] filename )
+    public this ( istring filename )
     {
         this.filename = filename;
     }
@@ -57,7 +58,7 @@ class FileException: ErrnoException
 
      **************************************************************************/
 
-    override public typeof(this) set ( int err_num, char[] name,
+    override public typeof(this) set ( int err_num, istring name,
                                        istring file = __FILE__, int line = __LINE__ )
     {
         super.set(err_num, name, file, line);
