@@ -190,7 +190,10 @@ abstract class IChannel: IStorageEngine
     {
         StorageEngine subscriber;
 
-        istring storage_name ( ) {return subscriber_name ~ "@" ~ this.id_;}
+        istring storage_name ( )
+        {
+            return cast(istring)(subscriber_name ~ "@" ~ this.id_);
+        }
 
         if (this.subscribers.length)
         {
@@ -263,21 +266,20 @@ abstract class IChannel: IStorageEngine
     body
     {
         enforce!(AddSubscriberException)(
-            this.initial_storage is null,
-            "Cannot add \"" ~ storage_name ~ "\": Channel \"" ~ this.id_ ~ "\""~
-            " has no subscribers"
+            this.initial_storage is null, cast(istring)("Cannot add \"" ~
+            storage_name ~ "\": Channel \"" ~ this.id_ ~ "\"" ~
+            " has no subscribers")
         );
 
         cstring subscriber_name;
         enforce!(AddSubscriberException)(
             splitSubscriberName(storage_name, subscriber_name) == this.id_,
-            "Channel name in \"" ~ storage_name ~
-            "\" does not match \"" ~ this.id_ ~ "\""
+            cast(istring)("Channel name in \"" ~ storage_name ~
+            "\" does not match \"" ~ this.id_ ~ "\"")
         );
         enforce!(AddSubscriberException)(
-            subscriber_name !is null,
-            "Cannot add \"" ~ storage_name ~ "\" as a subscriber: " ~
-            "No subscriber name"
+            subscriber_name !is null, cast(istring)("Cannot add \"" ~
+            storage_name ~ "\" as a subscriber: " ~ "No subscriber name")
         );
         if (!(subscriber_name in this.subscribers))
         {

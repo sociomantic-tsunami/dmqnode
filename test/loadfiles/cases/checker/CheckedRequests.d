@@ -309,7 +309,7 @@ class Consume: RecordChecker
     public this ( DmqClient dmq, cstring channel, cstring subscriber,
         uint n_expected_records, istring expected_record_content )
     {
-        super("consume " ~ subscriber ~ "@" ~ channel,
+        super(cast(istring)("consume " ~ subscriber ~ "@" ~ channel),
             n_expected_records, expected_record_content);
         this.dmq = dmq;
         this.id = dmq.neo.consume(
@@ -406,7 +406,8 @@ class Pop: RecordChecker
     public this ( DmqClient dmq, cstring channel, uint n_expected_records,
         istring expected_record_content )
     {
-        super("pop " ~ channel, n_expected_records, expected_record_content);
+        super(cast(istring)("pop " ~ channel), n_expected_records,
+            expected_record_content);
         for (uint i = 0; i < n_expected_records; i++)
             dmq.neo.pop(channel, &this.notifier);
     }

@@ -213,7 +213,8 @@ public class RingNode : StorageChannels
             this.log = Log.lookup("storage:" ~ this.storage_name);
 
             this.filename = FilePath.join(
-                this.outer.data_dir, this.storage_name ~ this.outer.DumpFileSuffix
+                this.outer.data_dir,
+                cast(istring)(this.storage_name ~ this.outer.DumpFileSuffix)
             );
             this.file_path.set(this.filename);
 
@@ -258,7 +259,8 @@ public class RingNode : StorageChannels
             this.log = Log.lookup("storage:" ~ this.storage_name);
             this.overflow.rename(idup(storage_name));
             this.filename = FilePath.join(
-                this.outer.data_dir, this.storage_name ~ this.outer.DumpFileSuffix
+                this.outer.data_dir,
+                cast(istring)(this.storage_name ~ this.outer.DumpFileSuffix)
             );
             this.file_path.set(this.filename);
         }
@@ -725,8 +727,9 @@ public class RingNode : StorageChannels
 
     override protected Channel create_ ( char[] id )
     {
-        enforce(!this.shutting_down, "Cannot create channel '" ~ id ~
-                                     "' while shutting down");
+        enforce(!this.shutting_down,
+            cast(istring)("Cannot create channel '" ~ id ~
+            "' while shutting down"));
 
         // During startup this.storage_for_create contains the storage to
         // use for this channel, which is set by this.createChannelOnStartup
@@ -961,7 +964,8 @@ public class RingNode : StorageChannels
             }
             else
                 throw new Channel.AddSubscriberException(
-                    "Duplicate storage name \"" ~ storage_name ~ '"'
+                    cast(istring)
+                    ("Duplicate storage name \"" ~ storage_name ~ '"')
                 );
         }
         else
@@ -1018,8 +1022,8 @@ public class RingNode : StorageChannels
             else
                 enforce!(Channel.AddSubscriberException)(
                     channel.storage_unless_subscribed !is null,
-                    "Found disk overflow channel \"" ~ storage_name ~
-                    "\", but the channel has a subscriber"
+                    cast(istring)("Found disk overflow channel \"" ~
+                    storage_name ~ "\", but the channel has a subscriber")
                 );
         }
         else
