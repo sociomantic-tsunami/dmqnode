@@ -23,23 +23,19 @@ import dmqnode.storage.engine.overflow.file.PosixFile;
 
 *******************************************************************************/
 
-private
+enum FALLOC_FL
 {
-    enum FALLOC_FL
-    {
-        /// Default mode, unnamed in the C API
-        ALLOCATE       = 0,
-        /// FALLOC_FL_COLLAPSE_RANGE
-        COLLAPSE_RANGE = 0x08,
-        /// FALLOC_FL_ZERO_RANGE
-        ZERO_RANGE     = 0x10
-    }
-
-    extern (C) int fallocate(
-        int fd, FALLOC_FL mode, DataFile.off_t offset, DataFile.off_t len
-    );
+    /// Default mode, unnamed in the C API
+    ALLOCATE       = 0,
+    /// FALLOC_FL_COLLAPSE_RANGE
+    COLLAPSE_RANGE = 0x08,
+    /// FALLOC_FL_ZERO_RANGE
+    ZERO_RANGE     = 0x10
 }
 
+private extern (C) int fallocate(
+    int fd, FALLOC_FL mode, DataFile.off_t offset, DataFile.off_t len
+);
 
 class DataFile: PosixFile
 {
