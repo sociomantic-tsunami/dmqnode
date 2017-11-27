@@ -91,7 +91,7 @@ class IndexFile: PosixFile
 
     ***************************************************************************/
 
-    public this ( char[] dir, char[] name )
+    public this ( cstring dir, cstring name )
     {
         super(dir, name);
         this.stream = fdopen(this.fd, "w+".ptr);
@@ -152,7 +152,7 @@ class IndexFile: PosixFile
                      * invariant.
                      */
                     channel.validate(channel,
-                        (bool good, char[] msg)
+                        (bool good, istring msg)
                         {
                             enforceImpl(this.e, good, msg, this.name, nline);
                         });

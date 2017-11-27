@@ -57,7 +57,7 @@ public scope class RemoveChannelRequest : Protocol.RemoveChannel
 
     ***************************************************************************/
 
-    override protected void removeChannel ( char[] channel )
+    override protected void removeChannel ( cstring channel )
     {
         this.resources.storage_channels.remove(channel);
     }

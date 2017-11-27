@@ -246,7 +246,10 @@ struct ChannelMetadata
 
     ***************************************************************************/
 
-    static void validate ( typeof(*this) channel, void delegate ( bool good, char[] msg ) check )
+    static void validate (
+        in typeof(*this) channel,
+        void delegate ( bool good, istring msg ) check
+    )
     {
         switch (channel.records)
         {
@@ -305,10 +308,7 @@ struct ChannelMetadata
 
         assert(!this.last_header.next_offset, "last_header.next expected to be 0");
 
-        this.validate(*this, (bool good, char[] msg)
-                      {
-                          assert(good, msg);
-                      });
+        validate(*this, (bool good, istring msg) {assert(good, msg);});
     }
 
     /***************************************************************************

@@ -116,7 +116,7 @@ public class RingNode : StorageChannels
 
         ***********************************************************************/
 
-        private char[] filename;
+        private istring filename;
 
 
         /***********************************************************************
@@ -595,7 +595,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    private char[] data_dir;
+    private Immut!(char[]) data_dir;
 
 
     /***************************************************************************
@@ -652,7 +652,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    public this ( char[] data_dir, IDmqNodeInfo dmqnode, ulong size_limit,
+    public this ( istring data_dir, IDmqNodeInfo dmqnode, ulong size_limit,
                   ChannelSizeConfig channel_size_config )
     in
     {
@@ -725,7 +725,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    override protected Channel create_ ( char[] id )
+    override protected Channel create_ ( cstring id )
     {
         enforce(!this.shutting_down,
             cast(istring)("Cannot create channel '" ~ id ~
@@ -829,7 +829,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    private void setWorkingPath ( FilePath path, char[] dir )
+    private void setWorkingPath ( FilePath path, cstring dir )
     {
         if ( dir )
         {
@@ -905,7 +905,7 @@ public class RingNode : StorageChannels
              * was found for them.
              */
             this.overflow.iterateChannelNames(
-                (ref char[] storage_name)
+                (ref cstring storage_name)
                 {
                     this.createChannelFromDiskOverflow(storage_name);
                     return 0;

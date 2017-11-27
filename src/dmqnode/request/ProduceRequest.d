@@ -80,7 +80,7 @@ public scope class ProduceRequest : Protocol.Produce
 
     ***************************************************************************/
 
-    override protected bool prepareChannel ( char[] channel_name )
+    override protected bool prepareChannel ( cstring channel_name )
     {
         this.storage_channel = this.resources.storage_channels.getCreate(
             *this.resources.channel_buffer);
@@ -97,7 +97,7 @@ public scope class ProduceRequest : Protocol.Produce
 
     ***************************************************************************/
 
-    override protected void pushRecord ( char[] channel_name, char[] value )
+    override protected void pushRecord ( cstring channel_name, cstring value )
     {
         assert (this.storage_channel !is null);
         foreach (subscriber; this.storage_channel)

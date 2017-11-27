@@ -94,7 +94,7 @@ public scope class PopRequest : Protocol.Pop
 
     ***************************************************************************/
 
-    override protected void[] getNextValue ( char[] channel_name )
+    override protected void[] getNextValue ( cstring channel_name )
     {
         return *this.resources.value_buffer;
     }

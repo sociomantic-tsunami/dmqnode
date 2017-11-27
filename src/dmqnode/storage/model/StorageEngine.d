@@ -92,7 +92,7 @@ public abstract class StorageEngine : IStorageEngine
 
      **************************************************************************/
 
-    protected this ( char[] id )
+    protected this ( cstring id )
     {
         super(id);
 

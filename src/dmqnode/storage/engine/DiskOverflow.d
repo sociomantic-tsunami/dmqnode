@@ -454,7 +454,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    public this ( char[] dir )
+    public this ( cstring dir )
     {
         FilePath(dir).create();
 
