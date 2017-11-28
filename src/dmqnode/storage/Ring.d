@@ -299,7 +299,7 @@ public class RingNode : StorageChannels
 
         ***********************************************************************/
 
-        override protected void push_ ( char[] value )
+        override protected void push_ ( cstring value )
         {
             this.outer.dmqnode.record_action_counters.increment("pushed", value.length);
 
@@ -307,7 +307,12 @@ public class RingNode : StorageChannels
             this.records_pushed++;
             this.bytes_pushed += value.length;
 
-            if (!this.queue.push(cast(ubyte[])value))
+            if (void[] dst = this.queue.push(value.length))
+            {
+                Const!(void)[] value_raw = value;
+                dst[] = value_raw;
+            }
+            else
             {
                 this.overflow.push(value);
             }
