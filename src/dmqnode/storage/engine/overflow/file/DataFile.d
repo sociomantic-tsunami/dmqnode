@@ -46,6 +46,7 @@ class DataFile: PosixFile
     import core.sys.posix.sys.types: off_t, ssize_t;
     import core.sys.posix.sys.uio: writev;
     import core.sys.posix.unistd: write, pwrite;
+    import ocean.transition;
 
     /***************************************************************************
 
@@ -355,7 +356,14 @@ class DataFile: PosixFile
 
 struct IoVec
 {
-    import ocean.core.ExceptionDefinitions: onArrayBoundsError;
+    version (D_Version2)
+    {
+        import core.exception: onRangeError;
+        alias onRangeError onArrayBoundsError;
+    }
+    else
+        import ocean.core.ExceptionDefinitions: onArrayBoundsError;
+
     import ocean.stdc.posix.sys.uio: writev, iovec;
 
     /***************************************************************************
