@@ -36,6 +36,8 @@ import ocean.time.StopWatch;
 import ocean.util.app.CliApp;
 import ocean.util.log.StaticTrace;
 
+import ocean.transition;
+
 
 /*******************************************************************************
 
@@ -46,7 +48,7 @@ import ocean.util.log.StaticTrace;
 
 *******************************************************************************/
 
-void main ( char[][] cl_args )
+int main ( istring[] cl_args )
 {
     auto app = new DmqPerformance;
     return app.main(cl_args);
@@ -313,7 +315,7 @@ public class DmqPerformance : CliApp
 
     ***************************************************************************/
 
-    private void popCallback ( DmqClient.RequestContext context, char[] data )
+    private void popCallback ( DmqClient.RequestContext context, in char[] data )
     {
     }
 
