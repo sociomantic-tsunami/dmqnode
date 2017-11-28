@@ -596,7 +596,7 @@ unittest
         ulong num_records ( ) { return this.records; }
         ulong num_bytes ( ) { return this.bytes; }
 
-        override void push_ ( char[] value ) { }
+        override void push_ ( cstring value ) { }
         override typeof(this) pop ( ref char[] value ) { return this; }
     }
 
