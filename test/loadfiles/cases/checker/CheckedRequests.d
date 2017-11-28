@@ -166,6 +166,8 @@ abstract class RecordChecker
 
 class UnexpectedNotification
 {
+    import ocean.core.SmartUnion;
+
     /***************************************************************************
 
         The name of the test, for the error message.

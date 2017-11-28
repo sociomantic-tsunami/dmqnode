@@ -24,6 +24,8 @@ import swarm.neo.request.Command;
 
 import ocean.core.TypeConvert : castFrom, downcast;
 
+import ocean.transition;
+
 /*******************************************************************************
 
     The request handler for the table of handlers. When called, runs in a fiber

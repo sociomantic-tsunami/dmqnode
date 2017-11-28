@@ -22,6 +22,8 @@ import swarm.neo.request.Command;
 import dmqnode.storage.model.StorageEngine;
 import ocean.core.TypeConvert : castFrom, downcast;
 
+import ocean.transition;
+
 /*******************************************************************************
 
     DMQ node implementation of the v2 Consume request protocol.
