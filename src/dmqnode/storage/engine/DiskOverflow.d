@@ -362,6 +362,8 @@ class DiskOverflow: DiskOverflowInfo
 
         debug (Full)
         {
+            auto mthis = (cast(Unqual!(typeof(this)))this);
+
             uint records = 0;
             ulong bytes = 0;
 
@@ -385,7 +387,7 @@ class DiskOverflow: DiskOverflowInfo
             assert(records == this.records, "numbers of records mismatch");
             assert(bytes == this.bytes, "numbers of bytes mismatch");
 
-            auto channel = this.first_offset_tracker.first;
+            auto channel = mthis.first_offset_tracker.first;
             foreach (i, n; first_offsets.sort)
             {
                 assert(channel !is null,
