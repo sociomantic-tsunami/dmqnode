@@ -16,6 +16,7 @@ module test.loadfiles.cases.checker.CheckedRequests;
 
 import dmqproto.client.DmqClient;
 import ocean.task.Task;
+import ocean.core.Traits;
 import ocean.transition;
 
 /*******************************************************************************
@@ -224,11 +225,12 @@ class UnexpectedNotification
     {
         foreach (i, Field; typeof(U.tupleof))
         {
-            // U.tupleof[i].stringof is "(Aggregate).field". To get "field"
-            // strip the first "Aggregate".length + 3 characters.
-            const name = U.tupleof[i].stringof[U.stringof.length + 3 .. $];
-            if (notification.active == mixin("notification.active." ~ name))
-                this.setMsg(name, &mixin("notification." ~ name).toString);
+            if (notification.active ==
+                mixin("notification.active." ~ FieldName!(i, U)))
+            {
+                this.setMsg(FieldName!(i, U),
+                    &mixin("notification." ~ FieldName!(i, U)).toString);
+            }
         }
     }
 
