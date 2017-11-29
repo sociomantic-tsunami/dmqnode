@@ -345,6 +345,14 @@ version (UnitTest)
     import ocean.core.Test;
     import ocean.sys.ErrnoException;
     extern (C) private FILE* fmemopen(void* buf, size_t size, Const!(char)* mode);
+
+    /// Creates a `FILE` stream reading from `buf`.
+    private FILE* fmemopen_read ( in void[] buf )
+    {
+        // Cast `const` away from `buf` because the "r" parameter specifies
+        // read-only access to it.
+        return fmemopen(cast(void*)buf.ptr, buf.length, "r".ptr);
+    }
 }
 
 unittest
@@ -354,7 +362,7 @@ unittest
     static void checkLine ( cstring line, void delegate ( FILE* stream,
         int n, cstring channel_name, ChannelMetadata channel ) check )
     {
-        FILE* stream = fmemopen(line.ptr, line.length, "r".ptr);
+        FILE* stream = fmemopen_read(line);
         if (stream is null)
             throw (new ErrnoException).useGlobalErrno("fmemopen");
 
