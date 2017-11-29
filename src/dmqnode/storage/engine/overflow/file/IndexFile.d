@@ -71,11 +71,28 @@ class IndexFile: PosixFile
 
     public FILE* stream;
 
+    /***************************************************************************
+
+        A flag for the invariant so that `stream` is checked only after the
+        constructor has returned. Otherwise the check fails when the super
+        constructor calls a protected method.
+
+    ***************************************************************************/
+
+    version (D_Version2)
+        mixin("version(assert) private bool ctor_returned = false;");
+
     /**************************************************************************/
 
     invariant ( )
     {
-        assert(this.stream);
+        version (D_Version2)
+        {
+            if (this.ctor_returned)
+                assert(this.stream);
+        }
+        else
+            assert(this.stream);
     }
 
     /***************************************************************************
@@ -96,6 +113,9 @@ class IndexFile: PosixFile
         super(dir, name);
         this.stream = fdopen(this.fd, "w+".ptr);
         this.enforce(this.stream, "unable to fdopen");
+
+        version (D_Version2)
+            mixin("version(assert) this.ctor_returned = true;");
     }
 
     /***************************************************************************
