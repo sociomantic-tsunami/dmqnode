@@ -440,10 +440,7 @@ abstract class IChannel: IStorageEngine
                 storage = null;
             }
 
-            version (D_Version2)
-                this.subscribers.clear;
-            else
-                this.subscribers = null;
+            this.subscribers = null;
         }
 
         this.is_reset = true;
