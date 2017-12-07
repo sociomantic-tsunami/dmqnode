@@ -66,5 +66,6 @@ private class RealDmqTestRunner : DmqTestRunner
 
 int main ( istring[] args )
 {
-    return (new TurtleRunner!(RealDmqTestRunner)("dmqnode")).main(args);
+    return (new TurtleRunner!(RealDmqTestRunner)("dmqnode", "dmqtest.cases"))
+        .main(args);
 }
