@@ -1,0 +1,12 @@
+import defaults
+
+OPTS.update(
+    name = VAR.shortname,
+    description = FUN.desc('common files'),
+    architecture = 'all',
+    depends = 'dmqnode',
+    deb_upstart = [
+        'deploy/upstart/dmq.conf',
+        'deploy/upstart/dmqnode-instance.conf',
+    ],
+)
