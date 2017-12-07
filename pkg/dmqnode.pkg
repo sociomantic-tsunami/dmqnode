@@ -1,18 +1,15 @@
-bins = ['dmqnode']
+import defaults
 
-OPTS = dict(
-    # VAR.fullname includes the VAR.suffix, check the docs for details
-    name = VAR.fullname,
-    description = '''\
-The DMQ node is a server implementing one node for a network message queue.''',
-    url = 'https://github.com/sociomantic-tsunami/dmqnode',
-    vendor = 'Sociomantic Labs GmbH',
-    maintainer = 'Sociomantic Labs GmbH <tsunami@sociomantic.com>',
-    deb_upstart = ['deploy/upstart/dmq.conf', 'deploy/upstart/dmqnode-instance.conf'],
-    provides = VAR.shortname, # For multi-version / D1/D2 installations
-    depends = FUN.autodeps(bins, path=VAR.bindir)
+bins = 'dmqnode'
+
+OPTS.update(
+    description = FUN.desc(epilog='''\
+The DMQ node is a server implementing one node for a network message queue.'''),
+    provides = 'dmqnode',
+    depends = FUN.autodeps(bins, path=VAR.bindir),
+    deb_recommends = 'dmqnode-common',
 )
 
-ARGS = FUN.mapfiles(VAR.bindir, '/usr/sbin', bins) + [
-        "README.rst=/usr/share/doc/"+VAR.fullname+"/"
-    ]
+ARGS.extend(FUN.mapfiles(VAR.bindir, '/usr/sbin', bins))
+
+# vim: set ft=python et sw=4 sts=4 :
