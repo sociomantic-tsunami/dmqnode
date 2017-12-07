@@ -23,29 +23,26 @@ import dmqnode.storage.engine.overflow.file.PosixFile;
 
 *******************************************************************************/
 
-private
+enum FALLOC_FL
 {
-    enum FALLOC_FL
-    {
-        /// Default mode, unnamed in the C API
-        ALLOCATE       = 0,
-        /// FALLOC_FL_COLLAPSE_RANGE
-        COLLAPSE_RANGE = 0x08,
-        /// FALLOC_FL_ZERO_RANGE
-        ZERO_RANGE     = 0x10
-    }
-
-    extern (C) int fallocate(
-        int fd, FALLOC_FL mode, DataFile.off_t offset, DataFile.off_t len
-    );
+    /// Default mode, unnamed in the C API
+    ALLOCATE       = 0,
+    /// FALLOC_FL_COLLAPSE_RANGE
+    COLLAPSE_RANGE = 0x08,
+    /// FALLOC_FL_ZERO_RANGE
+    ZERO_RANGE     = 0x10
 }
 
+private extern (C) int fallocate(
+    int fd, FALLOC_FL mode, DataFile.off_t offset, DataFile.off_t len
+);
 
 class DataFile: PosixFile
 {
     import core.sys.posix.sys.types: off_t, ssize_t;
-    import core.sys.posix.sys.uio: writev;
-    import core.sys.posix.unistd: write, pwrite;
+    import unistd = core.sys.posix.unistd: read, write, pread, pwrite;
+    import uio = core.sys.posix.sys.uio: iovec, writev;
+    import ocean.transition;
 
     /***************************************************************************
 
@@ -61,7 +58,7 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public static const head_truncation_chunk_size = 1 << 20;
+    public const head_truncation_chunk_size = 1 << 20;
 
     /***************************************************************************
 
@@ -77,46 +74,36 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public this ( char[] dir, char[] name )
+    public this ( cstring dir, cstring name )
     {
         super(dir, name);
     }
 
     /***************************************************************************
 
-        Reads or writes data from/to the file starting at position pos. Invokes
-        op to perform the I/O operation.
-        op may not transmit all data with each call and should return the number
-        of bytes transmitted or a negative value on error. op is repeatedly
-        called until
-         - all bytes in data were transmitted or
-         - op returned 0; the number of remaining bytes is then returned, or
-         - op returned a negative value and set errno a value different to
-           EINTR; a FileException is then thrown.
-
-        pos is increased by the number of bytes written, which is data.length -
-        the returned value.
+        Reads or writes `data` from/to the file starting at position `pos`.
+        `pos` is increased by the number of bytes read or written, which is
+        `data.length` - the returned value.
 
         Params:
             data = source or destination buffer to read from or write to, resp.
             pos  = file position, increased by the number of bytes read/written
-            op   = I/O function
-            errmsg = error message to use if op returns -1
-            line = source code line of the call of this method
+            errmsg = error message to use
 
         Returns:
             the number of bytes n in data that have not been transmitted because
-            op returned 0. The remaining bytes are data[$ - n .. $] so n == 0
-            indicates that all bytes have been transmitted.
+            POSIX `pread` or `pwrite` returned 0. The remaining bytes are
+            `data[$ - n .. $]` so n == 0 indicates that all bytes have been
+            transmitted.
 
         Throws:
-            FileException if op returns a negative value and sets errno to a
-            value different to EINTR.
+            FileException on error.
 
     ***************************************************************************/
 
-    public size_t transmit ( void[] data, ref off_t pos, typeof(&pwrite) op, char[] errmsg,
-                             char[] file = __FILE__, long line = __LINE__ )
+    public size_t ptransmit ( bool output )
+        ( IOVoid!(output)[] data, ref off_t pos, cstring errmsg,
+          istring file = __FILE__, long line = __LINE__ )
     in
     {
         assert(pos >= 0);
@@ -127,8 +114,13 @@ class DataFile: PosixFile
     }
     body
     {
-        for (void[] left = data; left.length;)
+        for (auto left = data; left.length;)
         {
+            static if (output)
+                alias unistd.pwrite op;
+            else
+                alias unistd.pread op;
+
             if (ssize_t n = this.restartInterrupted(op(this.fd, data.ptr, data.length, pos)))
             {
                 this.enforce(n > 0, errmsg, "", file, line);
@@ -144,44 +136,45 @@ class DataFile: PosixFile
         return 0;
     }
 
+    /// ditto
+    alias ptransmit!(false) pread;
+    /// ditto
+    alias ptransmit!(true) pwrite;
+
     /***************************************************************************
 
-        Reads or writes data from/to the file at the current position. Invokes
-        op to perform the I/O operation.
-        op may not transmit all data with each call and should return the number
-        of bytes transmitted or a negative value on error. op is repeatedly
-        called until
-         - all bytes in data were transmitted or
-         - op returned 0; the number of remaining bytes is then returned, or
-         - op returned a negative value and set errno a value different to
-           EINTR; a FileException is then thrown.
+        Reads or writes `data` from/to the file at the current position.
 
         Params:
             data = source or destination buffer to read from or write to, resp.
-            op   = I/O function
-            errmsg = error message to use if op returns -1
-            line = source code line of the call of this method
+            errmsg = error message to use
 
         Returns:
             the number of bytes n in data that have not been transmitted because
-            op returned 0. The remaining bytes are data[$ - n .. $] so n == 0
-            indicates that all bytes have been transmitted.
+            POSIX `read` or `write` returned 0. The remaining bytes are
+            `data[$ - n .. $]` so n == 0 indicates that all bytes have been
+            transmitted.
 
         Throws:
-            FileException if op returns a negative value and sets errno to a
-            value different to EINTR.
+            FileException on error.
 
     ***************************************************************************/
 
-    public size_t transmit ( void[] data, typeof(&write) op, char[] errmsg,
-                             char[] file = __FILE__, long line = __LINE__ )
+    public size_t transmit ( bool output )
+        ( IOVoid!(output)[] data, cstring errmsg,
+          istring file = __FILE__, long line = __LINE__ )
     out (n)
     {
         assert(n <= data.length);
     }
     body
     {
-        for (void[] left = data; left.length;)
+            static if (output)
+                alias unistd.write op;
+            else
+                alias unistd.read op;
+
+        for (auto left = data; left.length;)
         {
             if (ssize_t n = this.restartInterrupted(op(this.fd, left.ptr, left.length)))
             {
@@ -197,28 +190,22 @@ class DataFile: PosixFile
         return 0;
     }
 
+    /// ditto
+    alias transmit!(false) read;
+    /// ditto
+    alias transmit!(true) write;
+
     /***************************************************************************
 
-        Reads or writes data from/to the file at the current position. Invokes
-        op to perform the I/O operation.
-        op may not transmit all data with each call and should return the number
-        of bytes transmitted or a negative value on error. op is repeatedly
-        called until
-         - all bytes in data were transmitted or
-         - op returned 0; the number of remaining bytes is then returned, or
-         - op returned a negative value and set errno a value different to
-           EINTR; a FileException is then thrown.
+        Writes `data` to the file at the current position.
 
         Params:
-            data = vector of source or destination buffers to read from or write
-                   to, resp.
-            op   = I/O function
-            errmsg = error message to use if op returns -1
-            line = source code line of the call of this method
+            data = vector of buffers to read from
+            errmsg = error message to use
 
         Returns:
             the number of bytes n in data that have not been transmitted because
-            op returned 0. n == 0 indicates that all bytes have been
+            POSIX `writev` returned 0. n == 0 indicates that all bytes have been
             transmitted. data is adjusted to reference only the remaining
             chunks.
 
@@ -228,18 +215,20 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public size_t transmit ( ref IoVec data, typeof(&writev) op, char[] errmsg,
-                             char[] file = __FILE__, long line = __LINE__ )
+    public size_t writev ( ref IoVec data, cstring errmsg,
+                           istring file = __FILE__, long line = __LINE__ )
     {
         while (data.length)
         {
-            if (ssize_t n = this.restartInterrupted(op(this.fd, data.chunks.ptr, cast(int)data.chunks.length)))
+            if (ssize_t n = this.restartInterrupted(uio.writev(
+                this.fd, cast(iovec*)data.chunks.ptr, cast(int)data.chunks.length
+            )))
             {
                 this.enforce(n > 0, errmsg, "", file, line);
                 data.advance(n);
             }
-            else // end of file for read(); write() should
-            {    // return 0 iff data.length is 0
+            else // writev() should return 0 iff data.length is 0
+            {
                 return data.length;
             }
         }
@@ -271,7 +260,7 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     public ulong truncateHead ( ulong n,
-                                char[] file = __FILE__, long line = __LINE__ )
+                                istring file = __FILE__, long line = __LINE__ )
     {
         if (n < this.head_truncation_chunk_size)
             return 0;
@@ -311,7 +300,7 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     public void zeroRange ( off_t start, off_t len,
-                            char[] file = __FILE__, long line = __LINE__ )
+                            istring file = __FILE__, long line = __LINE__ )
     {
         this.allocate(
                 FALLOC_FL.ZERO_RANGE, start, len,
@@ -335,8 +324,8 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     protected void allocate ( FALLOC_FL mode, off_t offset, off_t len,
-                              char[] errmsg,
-                              char[] file = __FILE__, long line = __LINE__ )
+                              cstring errmsg,
+                              istring file = __FILE__, long line = __LINE__ )
     {
         this.enforce(
             !this.restartInterrupted(.fallocate(this.fd, mode, offset, len)),
@@ -345,18 +334,43 @@ class DataFile: PosixFile
     }
 }
 
+/*******************************************************************************
+
+    Evaluates to `const(void)`, if using a D2 compiler and `output` is `true`,
+    or `void` otherwise.
+
+*******************************************************************************/
+
+template IOVoid ( bool output )
+{
+    version (D_Version2)
+        static if (output)
+            mixin("alias const(void) IOVoid;");
+        else
+            alias void IOVoid;
+    else
+        alias void IOVoid;
+}
 
 /*******************************************************************************
 
-    Vector aka. scatter/gather I/O helper; tracks the byte position if
-    readv()/writev() didn't manage to transfer all data with one call.
+    Vector aka. gather output helper; tracks the byte position if `writev()`
+    didn't manage to transfer all data with one call.
 
 *******************************************************************************/
 
 struct IoVec
 {
-    import ocean.core.ExceptionDefinitions: onArrayBoundsError;
-    import ocean.stdc.posix.sys.uio: writev, iovec;
+    version (D_Version2)
+    {
+        import core.exception: onRangeError;
+        alias onRangeError onArrayBoundsError;
+    }
+    else
+        import ocean.core.ExceptionDefinitions: onArrayBoundsError;
+
+    import swarm.neo.protocol.socket.uio_const: iovec_const;
+    import ocean.transition;
 
     /***************************************************************************
 
@@ -365,7 +379,7 @@ struct IoVec
 
     ***************************************************************************/
 
-    iovec[] chunks;
+    iovec_const[] chunks;
 
     /***************************************************************************
 
@@ -438,7 +452,7 @@ struct IoVec
 
     ***************************************************************************/
 
-    void[] opIndex ( size_t i )
+    Const!(void)[] opIndex ( size_t i )
     in
     {
         if (i >= this.chunks.length)
@@ -457,7 +471,7 @@ struct IoVec
 
     ***************************************************************************/
 
-    void[] opIndexAssign ( void[] data, size_t i )
+    Const!(void)[] opIndexAssign ( Const!(void)[] data, size_t i )
     in
     {
         if (i >= this.chunks.length)
@@ -484,10 +498,10 @@ struct IoVec
 
     unittest
     {
-        iovec[6] iov_buf;
+        iovec_const[6] iov_buf;
 
-        void[] a = "Die",
-               b = "Katze",
+        Const!(void)[] a = "Die",
+                       b = "Katze",
                c = "tritt",
                d = "die",
                e = "Treppe",

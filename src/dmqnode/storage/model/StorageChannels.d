@@ -190,7 +190,10 @@ abstract class IChannel: IStorageEngine
     {
         StorageEngine subscriber;
 
-        istring storage_name ( ) {return subscriber_name ~ "@" ~ this.id_;}
+        istring storage_name ( )
+        {
+            return cast(istring)(subscriber_name ~ "@" ~ this.id_);
+        }
 
         if (this.subscribers.length)
         {
@@ -263,21 +266,20 @@ abstract class IChannel: IStorageEngine
     body
     {
         enforce!(AddSubscriberException)(
-            this.initial_storage is null,
-            "Cannot add \"" ~ storage_name ~ "\": Channel \"" ~ this.id_ ~ "\""~
-            " has no subscribers"
+            this.initial_storage is null, cast(istring)("Cannot add \"" ~
+            storage_name ~ "\": Channel \"" ~ this.id_ ~ "\"" ~
+            " has no subscribers")
         );
 
         cstring subscriber_name;
         enforce!(AddSubscriberException)(
             splitSubscriberName(storage_name, subscriber_name) == this.id_,
-            "Channel name in \"" ~ storage_name ~
-            "\" does not match \"" ~ this.id_ ~ "\""
+            cast(istring)("Channel name in \"" ~ storage_name ~
+            "\" does not match \"" ~ this.id_ ~ "\"")
         );
         enforce!(AddSubscriberException)(
-            subscriber_name !is null,
-            "Cannot add \"" ~ storage_name ~ "\" as a subscriber: " ~
-            "No subscriber name"
+            subscriber_name !is null, cast(istring)("Cannot add \"" ~
+            storage_name ~ "\" as a subscriber: " ~ "No subscriber name")
         );
         if (!(subscriber_name in this.subscribers))
         {
@@ -440,10 +442,7 @@ abstract class IChannel: IStorageEngine
                 storage = null;
             }
 
-            version (D_Version2)
-                this.subscribers.clear;
-            else
-                this.subscribers = null;
+            this.subscribers = null;
         }
 
         this.is_reset = true;
@@ -576,7 +575,7 @@ unittest
         bool flushed, cleared, closed, recycled;
         uint records, bytes;
 
-        this ( char[] id ) { super(id); }
+        this ( cstring id ) { super(id); }
 
         override void rename ( cstring ch ) { this.initialise(ch); }
         override cstring storage_name ( ) { return this.id; }
@@ -597,7 +596,7 @@ unittest
         ulong num_records ( ) { return this.records; }
         ulong num_bytes ( ) { return this.bytes; }
 
-        override void push_ ( char[] value ) { }
+        override void push_ ( cstring value ) { }
         override typeof(this) pop ( ref char[] value ) { return this; }
     }
 

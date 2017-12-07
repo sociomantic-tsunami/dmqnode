@@ -41,6 +41,7 @@ import ConfigReader = ocean.util.config.ConfigFiller;
 import ocean.util.log.Logger;
 import ocean.transition;
 
+import ocean.transition;
 
 /*******************************************************************************
 
@@ -66,7 +67,7 @@ static this ( )
 
 *******************************************************************************/
 
-private int main ( char[][] cl_args )
+private int main ( istring[] cl_args )
 {
     auto app = new DmqNodeServer;
     return app.main(cl_args);

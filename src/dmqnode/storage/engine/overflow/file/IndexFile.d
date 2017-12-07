@@ -44,7 +44,7 @@ class IndexFile: PosixFile
 
     ***************************************************************************/
 
-    public static const signals_dontblock = [SIGABRT, SIGSEGV, SIGBUS, SIGILL];
+    public const signals_dontblock = [SIGABRT, SIGSEGV, SIGBUS, SIGILL];
 
     /***************************************************************************
 
@@ -71,11 +71,28 @@ class IndexFile: PosixFile
 
     public FILE* stream;
 
+    /***************************************************************************
+
+        A flag for the invariant so that `stream` is checked only after the
+        constructor has returned. Otherwise the check fails when the super
+        constructor calls a protected method.
+
+    ***************************************************************************/
+
+    version (D_Version2)
+        mixin("version(assert) private bool ctor_returned = false;");
+
     /**************************************************************************/
 
     invariant ( )
     {
-        assert(this.stream);
+        version (D_Version2)
+        {
+            if (this.ctor_returned)
+                assert(this.stream);
+        }
+        else
+            assert(this.stream);
     }
 
     /***************************************************************************
@@ -91,11 +108,14 @@ class IndexFile: PosixFile
 
     ***************************************************************************/
 
-    public this ( char[] dir, char[] name )
+    public this ( cstring dir, cstring name )
     {
         super(dir, name);
         this.stream = fdopen(this.fd, "w+".ptr);
         this.enforce(this.stream, "unable to fdopen");
+
+        version (D_Version2)
+            mixin("version(assert) this.ctor_returned = true;");
     }
 
     /***************************************************************************
@@ -152,7 +172,7 @@ class IndexFile: PosixFile
                      * invariant.
                      */
                     channel.validate(channel,
-                        (bool good, char[] msg)
+                        (bool good, istring msg)
                         {
                             enforceImpl(this.e, good, msg, this.name, nline);
                         });
@@ -168,7 +188,7 @@ class IndexFile: PosixFile
                 default:
                     this.enforce(!feof(this.stream), "Unexpected end of file",
                                  "feof", this.name, nline);
-                    static const char[][] errmsg =
+                    auto errmsg =
                     [
                         "Invalid channel name"[],
                         "Invalid number of records",
@@ -345,6 +365,14 @@ version (UnitTest)
     import ocean.core.Test;
     import ocean.sys.ErrnoException;
     extern (C) private FILE* fmemopen(void* buf, size_t size, Const!(char)* mode);
+
+    /// Creates a `FILE` stream reading from `buf`.
+    private FILE* fmemopen_read ( in void[] buf )
+    {
+        // Cast `const` away from `buf` because the "r" parameter specifies
+        // read-only access to it.
+        return fmemopen(cast(void*)buf.ptr, buf.length, "r".ptr);
+    }
 }
 
 unittest
@@ -354,7 +382,7 @@ unittest
     static void checkLine ( cstring line, void delegate ( FILE* stream,
         int n, cstring channel_name, ChannelMetadata channel ) check )
     {
-        FILE* stream = fmemopen(line.ptr, line.length, "r".ptr);
+        FILE* stream = fmemopen_read(line);
         if (stream is null)
             throw (new ErrnoException).useGlobalErrno("fmemopen");
 

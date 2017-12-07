@@ -79,7 +79,7 @@ public class DmqNode
         options.requests = request_handlers;
         options.shared_resources = new Neo.SharedResources(ringnode);
         options.no_delay = no_delay;
-        options.unix_socket_path = server_config.unix_socket_path();
+        options.unix_socket_path = idup(server_config.unix_socket_path());
         options.credentials_filename = "etc/credentials";
 
         super(DmqConst.NodeItem(server_config.address(), server_config.port()),
@@ -144,7 +144,7 @@ public class DmqNode
 
     ***************************************************************************/
 
-    override protected char[] id ( )
+    override protected cstring id ( )
     {
         return typeof(this).stringof;
     }
@@ -178,7 +178,7 @@ public class DmqNode
 
      **************************************************************************/
 
-    override protected char[][] record_action_counter_ids ( )
+    override protected istring[] record_action_counter_ids ( )
     {
         return ["pushed", "popped"];
     }

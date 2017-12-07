@@ -188,12 +188,20 @@ interface DiskOverflowInfo
     ulong num_bytes ( );
 }
 
+/***************************************************************************
+
+    Exceptions thrown in DiskOverflow.
+
+***************************************************************************/
+
+class DiskOverflowException: Exception {this ( ) {super(null);}}
+
 /******************************************************************************/
 
 class DiskOverflow: DiskOverflowInfo
 {
     import dmqnode.storage.engine.overflow.ChannelMetadata;
-    import QConst = dmqnode.storage.engine.overflow.Const;
+    import dmqnode.storage.engine.overflow.Constants;
     import dmqnode.storage.engine.overflow.file.DataFile;
     import dmqnode.storage.engine.overflow.file.FileException;
     import dmqnode.storage.engine.overflow.file.HeadTruncationTestFile;
@@ -206,8 +214,6 @@ class DiskOverflow: DiskOverflowInfo
     import ocean.io.FilePath;
     import core.stdc.errno: errno;
     import core.sys.posix.sys.types: off_t;
-    import core.sys.posix.sys.uio: iovec, writev;
-    import core.sys.posix.unistd: read, pread, write, pwrite;
     import core.stdc.stdio: SEEK_CUR, SEEK_END;
     import ocean.transition;
     import ocean.util.log.Logger;
@@ -255,7 +261,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    private ChannelMetadata[istring] channels;
+    private ChannelMetadata[cstring] channels;
 
     /***************************************************************************
 
@@ -323,21 +329,11 @@ class DiskOverflow: DiskOverflowInfo
 
     /***************************************************************************
 
-        DiskOverflow.Exception class.
-
-    ***************************************************************************/
-
-    static class Exception: Exception_ {this ( ) {super(null);}}
-
-    alias .Exception Exception_;
-
-    /***************************************************************************
-
         Reusable exception.
 
     ***************************************************************************/
 
-    private typeof(this).Exception e;
+    private DiskOverflowException e;
 
     /**************************************************************************/
 
@@ -364,6 +360,8 @@ class DiskOverflow: DiskOverflowInfo
 
         debug (Full)
         {
+            auto mthis = (cast(Unqual!(typeof(this)))this);
+
             uint records = 0;
             ulong bytes = 0;
 
@@ -387,7 +385,7 @@ class DiskOverflow: DiskOverflowInfo
             assert(records == this.records, "numbers of records mismatch");
             assert(bytes == this.bytes, "numbers of bytes mismatch");
 
-            auto channel = this.first_offset_tracker.first;
+            auto channel = mthis.first_offset_tracker.first;
             foreach (i, n; first_offsets.sort)
             {
                 assert(channel !is null,
@@ -402,15 +400,6 @@ class DiskOverflow: DiskOverflowInfo
             delete first_offsets;
         }
     }
-
-    /***************************************************************************
-
-        Import constant definitions into this namespace:
-        File names and suffices and the data file ID string.
-
-    ***************************************************************************/
-
-    alias QConst.Const Const;
 
     /***************************************************************************
 
@@ -454,7 +443,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    public this ( char[] dir )
+    public this ( cstring dir )
     {
         FilePath(dir).create();
 
@@ -479,9 +468,9 @@ class DiskOverflow: DiskOverflowInfo
             log.error("Error testing file truncation: {}", getMsg(e));
         }
 
-        this.e     = new Exception;
-        this.data  = new DataFile(dir, Const.datafile_name);
-        this.index = new IndexFile(dir, Const.indexfile_name);
+        this.e     = new DiskOverflowException;
+        this.data  = new DataFile(dir, Constants.datafile_name);
+        this.index = new IndexFile(dir, Constants.indexfile_name);
 
         this.initChannels(this.verifyDataFileId());
     }
@@ -553,7 +542,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    package void push ( ref ChannelMetadata channel, void[] data )
+    package void push ( ref ChannelMetadata channel, in void[] data )
     in
     {
         assert(&channel);
@@ -606,7 +595,7 @@ class DiskOverflow: DiskOverflowInfo
          * Make sure the file position never interferes with the ID string at
          * the beginning of the data file.
          */
-        assert(pos >= Const.datafile_id.length);
+        assert(pos >= Constants.datafile_id.length);
     }
     body
     {
@@ -622,13 +611,13 @@ class DiskOverflow: DiskOverflowInfo
 
         if (this.records)
         {
-            this.data.enforce(pos >= Const.datafile_id.length, "File size less than length of ID string");
+            this.data.enforce(pos >= Constants.datafile_id.length, "File size less than length of ID string");
         }
         else
         {
             this.data.enforce(!pos, "File expected to be empty");
-            this.data.transmit(Const.datafile_id, &write, "Unable to write the data file ID");
-            pos = Const.datafile_id.length;
+            this.data.write(Constants.datafile_id, "Unable to write the data file ID");
+            pos = Constants.datafile_id.length;
         }
 
         return pos;
@@ -672,8 +661,8 @@ class DiskOverflow: DiskOverflowInfo
         /*
          * Write the updated header back.
          */
-        this.data.transmit(
-            this.dump(last_header), last_offset, &pwrite,
+        this.data.pwrite(
+            this.dump(last_header), last_offset,
             "push: unable to update last record"
         );
     }
@@ -695,7 +684,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    private RecordHeader writeRecord ( uint channel_id, void[] data )
+    private RecordHeader writeRecord ( uint channel_id, in void[] data )
     {
         /*
          * Set up the header for the new record, make a copy for the next push
@@ -706,12 +695,12 @@ class DiskOverflow: DiskOverflowInfo
         header.length  = data.length;
         header.setParity();
 
-        iovec[2] iov_buf;
+        IoVec.iovec_const[2] iov_buf;
         auto iov = IoVec(iov_buf);
         iov[0]   = this.dump(header);
         iov[1]   = data;
 
-        this.data.transmit(iov, &writev, "unable to write record");
+        this.data.writev(iov, "unable to write record");
 
         return header;
     }
@@ -766,7 +755,7 @@ class DiskOverflow: DiskOverflowInfo
         assert(data.length == header.length, "pop: array returned by get_buffer not of requested size");
 
         this.data.enforce(
-            !this.data.transmit(data, pos, &pread, "unable to read record data"),
+            !this.data.pread(data, pos, "unable to read record data"),
             "Unexpected end of file reading record data."
         );
 
@@ -1034,7 +1023,7 @@ class DiskOverflow: DiskOverflowInfo
         auto start = pos;
 
         this.data.enforce(
-            !this.data.transmit(this.dump(header), pos, &pread, "unable to read record header"),
+            !this.data.pread(this.dump(header), pos, "unable to read record header"),
             "Unexpected end of file reading record header."
         );
 
@@ -1093,7 +1082,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    public int iterateChannelNames ( int delegate ( ref istring name ) dg )
+    public int iterateChannelNames ( int delegate ( ref cstring name ) dg )
     {
         foreach (name, metadata; this.channels)
         {
@@ -1128,9 +1117,9 @@ class DiskOverflow: DiskOverflowInfo
     }
     body
     {
-        char[Const.datafile_id.length] datafile_id;
+        char[Constants.datafile_id.length] datafile_id;
 
-        if (auto rem = this.data.transmit(datafile_id, &read, "unable to read the file ID"))
+        if (auto rem = this.data.read(datafile_id, "unable to read the file ID"))
         {
             /*
              * rem is datafile_id.length minus the number of bytes read before
@@ -1142,7 +1131,7 @@ class DiskOverflow: DiskOverflowInfo
         }
         else
         {
-            this.data.enforce(datafile_id == Const.datafile_id, "File ID mismatch");
+            this.data.enforce(datafile_id == Constants.datafile_id, "File ID mismatch");
             return this.data.seek(0, SEEK_END, "unable to initially seek to the end of the file");
         }
     }
@@ -1152,10 +1141,10 @@ class DiskOverflow: DiskOverflowInfo
         Miminizes the size of the data file by truncating the beginning of the
         file, as follows:
         The data file starts with an 8-byte identifier string,
-        `Const.datafile_id`, and the records follow that string. After records
-        have been popped, there may be a contiguous range of already popped
-        records between the identifier string and the first record in the data
-        file that hasn't been popped yet. If such a range exists then this
+        `Constants.datafile_id`, and the records follow that string. After
+        records have been popped, there may be a contiguous range of already
+        popped records between the identifier string and the first record in the
+        data file that hasn't been popped yet. If such a range exists then this
         method will
          - truncate the data file from the beginning, removing the largest
            integer multiple of `DataFile.head_truncation_chunk_size` (1 MiB)
@@ -1227,16 +1216,16 @@ class DiskOverflow: DiskOverflowInfo
          * datafile_id.length + RecordHeader.sizeof otherwise.
          */
         auto bytes_cutoff = cast(ulong)channel.first_offset;
-        if (bytes_cutoff == Const.datafile_id.length)
+        if (bytes_cutoff == Constants.datafile_id.length)
             return 0;
 
-        assert(bytes_cutoff >= (Const.datafile_id.length + RecordHeader.sizeof));
+        assert(bytes_cutoff >= (Constants.datafile_id.length + RecordHeader.sizeof));
 
         /*
          * Subtract (datafile_id.length + RecordHeader.sizeof), the extra space
          * needed at the beginning if truncating the file.
          */
-        bytes_cutoff -= (Const.datafile_id.length + RecordHeader.sizeof);
+        bytes_cutoff -= (Constants.datafile_id.length + RecordHeader.sizeof);
 
         /*
          * Now bytes_cutoff is the maximum number of bytes that can be
@@ -1275,8 +1264,8 @@ class DiskOverflow: DiskOverflowInfo
          */
         off_t pos = 0;
 
-        this.data.transmit(
-            Const.datafile_id, pos, &pwrite,
+        this.data.pwrite(
+            Constants.datafile_id, pos,
             "unable to write the file ID after data file truncation"
         );
 
@@ -1292,8 +1281,8 @@ class DiskOverflow: DiskOverflowInfo
         header.length = first_offset - header.sizeof - pos;
         header.setParity();
 
-        this.data.transmit(
-            this.dump(header), pos, &pwrite,
+        this.data.pwrite(
+            this.dump(header), pos,
             "unable to write the spare record header"
         );
 
@@ -1319,10 +1308,10 @@ class DiskOverflow: DiskOverflowInfo
         /*
          * Check the data file id.
          */
-        char[Const.datafile_id.length] datafile_id;
+        char[Constants.datafile_id.length] datafile_id;
         this.data.enforce(
-            !this.data.transmit(
-                datafile_id, pos, &pread, "unable to read the data file id"
+            !this.data.pread(
+                datafile_id, pos, "unable to read the data file id"
             ),
             "Unexpected end of file reading the data file id."
         );
@@ -1332,8 +1321,8 @@ class DiskOverflow: DiskOverflowInfo
          */
         RecordHeader dummy_record_header;
         this.data.enforce(
-            !this.data.transmit(
-                this.dump(dummy_record_header), pos, &pread,
+            !this.data.pread(
+                this.dump(dummy_record_header), pos,
                 "unable to read the dummy record header"
             ),
             "Unexpected end of file reading the dummy record header."

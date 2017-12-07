@@ -20,7 +20,7 @@
 module test.ovminimize.main;
 
 import dmqnode.storage.engine.DiskOverflow;
-import dmqnode.storage.engine.overflow.Const;
+import dmqnode.storage.engine.overflow.Constants;
 import dmqnode.storage.engine.overflow.file.DataFile;
 import dmqnode.storage.engine.overflow.RecordHeader;
 
@@ -304,7 +304,7 @@ void run ( )
 
 private size_t calcDataFileSize ( uint[] n_records_per_channel ... )
 {
-    return Const.datafile_id.sizeof + calcRecordSize(n_records_per_channel);
+    return Constants.datafile_id.sizeof + calcRecordSize(n_records_per_channel);
 }
 
 /*******************************************************************************

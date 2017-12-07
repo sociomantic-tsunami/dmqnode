@@ -92,7 +92,7 @@ public abstract class StorageEngine : IStorageEngine
 
      **************************************************************************/
 
-    protected this ( char[] id )
+    protected this ( cstring id )
     {
         super(id);
 
@@ -113,7 +113,7 @@ public abstract class StorageEngine : IStorageEngine
 
      **************************************************************************/
 
-    public void push ( char[] value )
+    public void push ( cstring value )
     {
         this.push_(value);
         this.consumers.trigger(Consumers.ListenerCode.DataReady);
@@ -159,7 +159,7 @@ public abstract class StorageEngine : IStorageEngine
 
      **************************************************************************/
 
-    abstract protected void push_ ( char[] value );
+    abstract protected void push_ ( cstring value );
 
 
     /***************************************************************************

@@ -43,7 +43,7 @@ void handle (
     Object shared_resources,
     ConnectionHandler.RequestOnConn connection,
     ConnectionHandler.Command.Version cmdver,
-    void[] msg_payload
+    Const!(void)[] msg_payload
 )
 {
     auto dmq_shared_resources = downcast!(SharedResources)(shared_resources);

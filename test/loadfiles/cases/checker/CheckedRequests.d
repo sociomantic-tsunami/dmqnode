@@ -16,6 +16,7 @@ module test.loadfiles.cases.checker.CheckedRequests;
 
 import dmqproto.client.DmqClient;
 import ocean.task.Task;
+import ocean.core.Traits;
 import ocean.transition;
 
 /*******************************************************************************
@@ -166,6 +167,8 @@ abstract class RecordChecker
 
 class UnexpectedNotification
 {
+    import ocean.core.SmartUnion;
+
     /***************************************************************************
 
         The name of the test, for the error message.
@@ -222,11 +225,12 @@ class UnexpectedNotification
     {
         foreach (i, Field; typeof(U.tupleof))
         {
-            // U.tupleof[i].stringof is "(Aggregate).field". To get "field"
-            // strip the first "Aggregate".length + 3 characters.
-            const name = U.tupleof[i].stringof[U.stringof.length + 3 .. $];
-            if (notification.active == mixin("notification.active." ~ name))
-                this.setMsg(name, &mixin("notification." ~ name).toString);
+            if (notification.active ==
+                mixin("notification.active." ~ FieldName!(i, U)))
+            {
+                this.setMsg(FieldName!(i, U),
+                    &mixin("notification." ~ FieldName!(i, U)).toString);
+            }
         }
     }
 
@@ -307,7 +311,7 @@ class Consume: RecordChecker
     public this ( DmqClient dmq, cstring channel, cstring subscriber,
         uint n_expected_records, istring expected_record_content )
     {
-        super("consume " ~ subscriber ~ "@" ~ channel,
+        super(cast(istring)("consume " ~ subscriber ~ "@" ~ channel),
             n_expected_records, expected_record_content);
         this.dmq = dmq;
         this.id = dmq.neo.consume(
@@ -401,7 +405,8 @@ class Pop: RecordChecker
     public this ( DmqClient dmq, cstring channel, uint n_expected_records,
         istring expected_record_content )
     {
-        super("pop " ~ channel, n_expected_records, expected_record_content);
+        super(cast(istring)("pop " ~ channel), n_expected_records,
+            expected_record_content);
         for (uint i = 0; i < n_expected_records; i++)
             dmq.neo.pop(channel, &this.notifier);
     }

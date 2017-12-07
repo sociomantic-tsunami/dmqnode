@@ -67,7 +67,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    static private const char[] DumpFileSuffix = ".rq"; // Must be char[] because of DMD bug 12634.
+    const istring DumpFileSuffix = ".rq";
 
 
     /***************************************************************************
@@ -116,7 +116,7 @@ public class RingNode : StorageChannels
 
         ***********************************************************************/
 
-        private char[] filename;
+        private istring filename;
 
 
         /***********************************************************************
@@ -213,7 +213,8 @@ public class RingNode : StorageChannels
             this.log = Log.lookup("storage:" ~ this.storage_name);
 
             this.filename = FilePath.join(
-                this.outer.data_dir, this.storage_name ~ this.outer.DumpFileSuffix
+                this.outer.data_dir,
+                cast(istring)(this.storage_name ~ this.outer.DumpFileSuffix)
             );
             this.file_path.set(this.filename);
 
@@ -258,7 +259,8 @@ public class RingNode : StorageChannels
             this.log = Log.lookup("storage:" ~ this.storage_name);
             this.overflow.rename(idup(storage_name));
             this.filename = FilePath.join(
-                this.outer.data_dir, this.storage_name ~ this.outer.DumpFileSuffix
+                this.outer.data_dir,
+                cast(istring)(this.storage_name ~ this.outer.DumpFileSuffix)
             );
             this.file_path.set(this.filename);
         }
@@ -297,7 +299,7 @@ public class RingNode : StorageChannels
 
         ***********************************************************************/
 
-        override protected void push_ ( char[] value )
+        override protected void push_ ( cstring value )
         {
             this.outer.dmqnode.record_action_counters.increment("pushed", value.length);
 
@@ -305,7 +307,12 @@ public class RingNode : StorageChannels
             this.records_pushed++;
             this.bytes_pushed += value.length;
 
-            if (!this.queue.push(cast(ubyte[])value))
+            if (void[] dst = this.queue.push(value.length))
+            {
+                Const!(void)[] value_raw = value;
+                dst[] = value_raw;
+            }
+            else
             {
                 this.overflow.push(value);
             }
@@ -593,7 +600,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    private char[] data_dir;
+    private Immut!(char[]) data_dir;
 
 
     /***************************************************************************
@@ -650,7 +657,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    public this ( char[] data_dir, IDmqNodeInfo dmqnode, ulong size_limit,
+    public this ( istring data_dir, IDmqNodeInfo dmqnode, ulong size_limit,
                   ChannelSizeConfig channel_size_config )
     in
     {
@@ -723,10 +730,11 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    override protected Channel create_ ( char[] id )
+    override protected Channel create_ ( cstring id )
     {
-        enforce(!this.shutting_down, "Cannot create channel '" ~ id ~
-                                     "' while shutting down");
+        enforce(!this.shutting_down,
+            cast(istring)("Cannot create channel '" ~ id ~
+            "' while shutting down"));
 
         // During startup this.storage_for_create contains the storage to
         // use for this channel, which is set by this.createChannelOnStartup
@@ -793,7 +801,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    override public char[] type ( )
+    override public cstring type ( )
     {
         return Ring.stringof;
     }
@@ -826,7 +834,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    private void setWorkingPath ( FilePath path, char[] dir )
+    private void setWorkingPath ( FilePath path, cstring dir )
     {
         if ( dir )
         {
@@ -879,8 +887,8 @@ public class RingNode : StorageChannels
                                     info.name);
                             break;
 
-                        case this.overflow.Const.datafile_suffix,
-                             this.overflow.Const.indexfile_suffix:
+                        case this.overflow.Constants.datafile_suffix,
+                             this.overflow.Constants.indexfile_suffix:
                             break;
 
                         default:
@@ -902,7 +910,7 @@ public class RingNode : StorageChannels
              * was found for them.
              */
             this.overflow.iterateChannelNames(
-                (ref char[] storage_name)
+                (ref cstring storage_name)
                 {
                     this.createChannelFromDiskOverflow(storage_name);
                     return 0;
@@ -961,7 +969,8 @@ public class RingNode : StorageChannels
             }
             else
                 throw new Channel.AddSubscriberException(
-                    "Duplicate storage name \"" ~ storage_name ~ '"'
+                    cast(istring)
+                    ("Duplicate storage name \"" ~ storage_name ~ '"')
                 );
         }
         else
@@ -1018,8 +1027,8 @@ public class RingNode : StorageChannels
             else
                 enforce!(Channel.AddSubscriberException)(
                     channel.storage_unless_subscribed !is null,
-                    "Found disk overflow channel \"" ~ storage_name ~
-                    "\", but the channel has a subscriber"
+                    cast(istring)("Found disk overflow channel \"" ~
+                    storage_name ~ "\", but the channel has a subscriber")
                 );
         }
         else

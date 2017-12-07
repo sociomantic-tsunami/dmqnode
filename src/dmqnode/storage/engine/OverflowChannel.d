@@ -86,7 +86,7 @@ package class OverflowChannel: DiskOverflowInfo
 
     ***************************************************************************/
 
-    public void push ( void[] data )
+    public void push ( in void[] data )
     {
         this.host.push(*this.metadata, data);
     }

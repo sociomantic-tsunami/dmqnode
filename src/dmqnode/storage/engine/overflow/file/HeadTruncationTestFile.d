@@ -46,7 +46,7 @@ class HeadTruncationTestFile: DataFile
 
     ***************************************************************************/
 
-    public this ( char[] dir )
+    public this ( cstring dir )
     {
         super(dir, "falloctest_XXXXXX");
 

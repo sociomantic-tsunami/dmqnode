@@ -1,4 +1,9 @@
-override DFLAGS += -w -v2 -v2=-static-arr-params
+ifeq ($(DVER),1)
+override DFLAGS += -v2 -v2=-static-arr-params -v2=-volatile
+else
+DC = dmd-transitional
+endif
+
 override LDFLAGS += -llzo2 -lebtree -lrt -lgcrypt -lgpg-error -lglib-2.0
 
 # Modules to exclude from testing

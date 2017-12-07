@@ -18,7 +18,7 @@ import ocean.transition;
 
 struct ChannelMetadata
 {
-    import dmqnode.storage.engine.overflow.Const;
+    import dmqnode.storage.engine.overflow.Constants;
     import Tracker = dmqnode.storage.engine.overflow.FirstOffsetTracker;
 
     import ocean.core.Enforce: enforce;
@@ -246,7 +246,10 @@ struct ChannelMetadata
 
     ***************************************************************************/
 
-    static void validate ( typeof(*this) channel, void delegate ( bool good, char[] msg ) check )
+    static void validate (
+        in typeof(*this) channel,
+        void delegate ( bool good, istring msg ) check
+    )
     {
         switch (channel.records)
         {
@@ -263,7 +266,7 @@ struct ChannelMetadata
                 break;
         }
 
-        check(channel.first_offset >= Const.datafile_id.length, "first_offset before end of data file ID");
+        check(channel.first_offset >= Constants.datafile_id.length, "first_offset before end of data file ID");
     }
 
     /***************************************************************************
@@ -305,10 +308,7 @@ struct ChannelMetadata
 
         assert(!this.last_header.next_offset, "last_header.next expected to be 0");
 
-        this.validate(*this, (bool good, char[] msg)
-                      {
-                          assert(good, msg);
-                      });
+        validate(*this, (bool good, istring msg) {assert(good, msg);});
     }
 
     /***************************************************************************
@@ -326,7 +326,7 @@ struct ChannelMetadata
     private void reset_ ( )
     out
     {
-        assert(&this); // invariant
+        assert(this); // invariant
     }
     body
     {
