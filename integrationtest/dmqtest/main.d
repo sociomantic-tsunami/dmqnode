@@ -12,7 +12,7 @@
 
 *******************************************************************************/
 
-module dmqtest.main;
+module integrationtest.dmqtest.main;
 
 
 import dmqtest.TestRunner;
@@ -38,8 +38,8 @@ private class RealDmqTestRunner : DmqTestRunner
     override public CopyFileEntry[] copyFiles ( )
     {
         return [
-            CopyFileEntry("test/dmqtest/etc/config.ini", "etc/config.ini"),
-            CopyFileEntry("test/dmqtest/etc/credentials", "etc/credentials")
+            CopyFileEntry("integrationtest/dmqtest/etc/config.ini", "etc/config.ini"),
+            CopyFileEntry("integrationtest/dmqtest/etc/credentials", "etc/credentials")
         ];
     }
 
@@ -64,6 +64,7 @@ private class RealDmqTestRunner : DmqTestRunner
 
 *******************************************************************************/
 
+version (UnitTest) {} else
 int main ( istring[] args )
 {
     return (new TurtleRunner!(RealDmqTestRunner)("dmqnode", "dmqtest.cases"))
