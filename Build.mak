@@ -26,8 +26,14 @@ $O/test-ovfminimize: override DFLAGS += -debug=OvfMinimizeTest -debug=Full
 $O/test-loadfiles: dmqnode
 $O/test-loadfiles: override LDFLAGS += -lpcre
 
+allunittest: override DFLAGS += -debug=OvfMinimizeTest -debug=Full
+allunittest: override LDFLAGS += -lpcre
+
 # Additional flags needed when unittesting
 #$O/%unittests: override LDFLAGS += 
 
 # Package dependencies
-$O/pkg-dmqnode.stamp: $B/dmqnode README.rst deploy/upstart/dmq.conf
+$O/pkg-dmqnode.stamp: $B/dmqnode README.rst
+
+$O/pkg-dmqnode-common.stamp: \
+       $(PKG)/defaults.py README.rst deploy/upstart/dmq.conf

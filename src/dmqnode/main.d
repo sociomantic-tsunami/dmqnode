@@ -67,6 +67,7 @@ static this ( )
 
 *******************************************************************************/
 
+version (UnitTest) {} else
 private int main ( istring[] cl_args )
 {
     auto app = new DmqNodeServer;
@@ -141,7 +142,7 @@ public class DmqNodeServer : DaemonApp
         settings.signals = [SIGINT, SIGTERM, SIGQUIT];
         this.epoll = new EpollSelectDispatcher;
 
-        super(app_name, app_desc, versionInfo, settings);
+        super(app_name, app_desc, version_info, settings);
     }
 
 

@@ -34,14 +34,14 @@
 
 *******************************************************************************/
 
-module test.loadfiles.cases.LoadFiles;
+module integrationtest.loadfiles.cases.LoadFiles;
 
 import turtle.TestCase;
 
 /// ditto
 class LoadFiles: TestCase
 {
-    import test.loadfiles.cases.checker.CheckedRequests;
+    import integrationtest.loadfiles.cases.checker.CheckedRequests;
     import dmqproto.client.DmqClient;
     import swarm.neo.authentication.HmacDef: Key;
     import ocean.task.Scheduler;

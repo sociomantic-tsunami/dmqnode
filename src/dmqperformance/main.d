@@ -48,6 +48,7 @@ import ocean.transition;
 
 *******************************************************************************/
 
+version (UnitTest) {} else
 int main ( istring[] cl_args )
 {
     auto app = new DmqPerformance;
@@ -156,7 +157,7 @@ public class DmqPerformance : CliApp
         const char[] name = "DMQ performance tester";
         const char[] desc = "performing (-c) pushes then (-c) pops each cycle,"
                             " with up to (-p) requests in parallel";
-        super(name, desc, versionInfo);
+        super(name, desc, version_info);
     }
 
 

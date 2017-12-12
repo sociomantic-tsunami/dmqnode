@@ -17,7 +17,7 @@
 
 *******************************************************************************/
 
-module test.ovminimize.main;
+module integrationtest.ovfminimize.main;
 
 import dmqnode.storage.engine.DiskOverflow;
 import dmqnode.storage.engine.overflow.Constants;
@@ -47,7 +47,7 @@ import ocean.util.log.Logger;
 
 *******************************************************************************/
 
-
+version (UnitTest) {} else
 int main ( )
 {
     try

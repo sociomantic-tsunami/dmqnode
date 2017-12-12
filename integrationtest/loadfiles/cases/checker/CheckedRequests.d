@@ -12,7 +12,7 @@
 
 *******************************************************************************/
 
-module test.loadfiles.cases.checker.CheckedRequests;
+module integrationtest.loadfiles.cases.checker.CheckedRequests;
 
 import dmqproto.client.DmqClient;
 import ocean.task.Task;

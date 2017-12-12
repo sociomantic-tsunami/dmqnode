@@ -10,9 +10,9 @@
 
 *******************************************************************************/
 
-module test.loadfiles.main;
+module integrationtest.loadfiles.main;
 
-import test.loadfiles.cases.LoadFiles;
+import integrationtest.loadfiles.cases.LoadFiles;
 import turtle.runner.Runner;
 import ocean.util.log.Logger;
 import ocean.transition;
@@ -35,15 +35,15 @@ private class LoadFilesTestRunner : TurtleRunnerTask!(TestedAppKind.Daemon)
     override public CopyFileEntry[] copyFiles ( )
     {
         return [
-            CopyFileEntry("test/loadfiles/etc/config.ini", "etc/config.ini"),
-            CopyFileEntry("test/loadfiles/etc/credentials", "etc/credentials"),
-            CopyFileEntry("test/loadfiles/data/", "./")
+            CopyFileEntry("integrationtest/loadfiles/etc/config.ini", "etc/config.ini"),
+            CopyFileEntry("integrationtest/loadfiles/etc/credentials", "etc/credentials"),
+            CopyFileEntry("integrationtest/loadfiles/data/", "./")
         ];
     }
 
     public this()
     {
-        this.test_package = "loadfiles.cases";
+        this.test_package = "integrationtest.loadfiles.cases";
     }
 
     /***************************************************************************
@@ -82,8 +82,9 @@ private class LoadFilesTestRunner : TurtleRunnerTask!(TestedAppKind.Daemon)
 
 *******************************************************************************/
 
+version (UnitTest) {} else
 int main ( istring[] args )
 {
     return (new TurtleRunner!(LoadFilesTestRunner)("dmqnode",
-        "test.loadfiles.cases", "loadfiles_test")).main(args);
+        "integrationtest.loadfiles.cases", "loadfiles_test")).main(args);
 }
