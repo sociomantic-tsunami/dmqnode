@@ -10,3 +10,9 @@ OPTS.update(
         'deploy/upstart/dmqnode-instance.conf',
     ],
 )
+
+# Replace existing args without rebinding
+ARGS[:] = [
+        "README.rst=/usr/share/doc/" + VAR.shortname + "/README.rst",
+        "deploy/logrotate/dmqnode-logs=/etc/logrotate.d/"
+    ]
