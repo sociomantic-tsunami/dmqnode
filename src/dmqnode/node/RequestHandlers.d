@@ -12,12 +12,14 @@
 
 module dmqnode.node.RequestHandlers;
 
-import Consume = dmqnode.request.neo.Consume;
-import Pop     = dmqnode.request.neo.Pop;
-import Push    = dmqnode.request.neo.Push;
+import dmqnode.request.neo.Consume;
+import dmqnode.request.neo.Pop;
+import dmqnode.request.neo.Push;
 
 import swarm.neo.node.ConnectionHandler;
-import dmqproto.client.legacy.DmqConst;
+import swarm.neo.request.Command;
+
+import dmqproto.common.RequestCodes;
 
 /*******************************************************************************
 
@@ -27,11 +29,14 @@ import dmqproto.client.legacy.DmqConst;
 
 *******************************************************************************/
 
-public ConnectionHandler.CmdHandlers request_handlers;
+public ConnectionHandler.RequestMap request_handlers;
 
 static this ( )
 {
-    request_handlers.add(DmqConst.Command.E.Consume, "consume", &Consume.handle, false);
-    request_handlers.add(DmqConst.Command.E.Push, "push", &Push.handle);
-    request_handlers.add(DmqConst.Command.E.Pop, "pop", &Pop.handle);
+    request_handlers.add(Command(RequestCode.Consume, 4), "consume",
+        ConsumeImpl_v4.classinfo, false);
+    request_handlers.add(Command(RequestCode.Push, 3), "push",
+        PushImpl_v3.classinfo);
+    request_handlers.add(Command(RequestCode.Pop, 1), "pop",
+        PopImpl_v1.classinfo);
 }

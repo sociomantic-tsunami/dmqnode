@@ -86,5 +86,5 @@ version (UnitTest) {} else
 int main ( istring[] args )
 {
     return (new TurtleRunner!(LoadFilesTestRunner)("dmqnode",
-        "integrationtest.loadfiles.cases", "loadfiles_test")).main(args);
+        "integrationtest.loadfiles.cases")).main(args);
 }
