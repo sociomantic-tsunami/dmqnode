@@ -46,6 +46,14 @@ public class DmqNode
 {
     /***************************************************************************
 
+        Shared resources.
+
+    ***************************************************************************/
+
+    private Neo.SharedResources shared_resources;
+
+    /***************************************************************************
+
         Constructor
 
         Params:
@@ -66,6 +74,8 @@ public class DmqNode
                                      server_config.size_limit,
                                      channel_size_config);
 
+        this.shared_resources = new Neo.SharedResources(ringnode);
+
         // Classic connection handler settings
         auto conn_setup_params = new ConnectionSetupParams;
         conn_setup_params.node_info = this;
@@ -77,7 +87,7 @@ public class DmqNode
         Options options;
         options.epoll = epoll;
         options.requests = request_handlers;
-        options.shared_resources = new Neo.SharedResources(ringnode);
+        options.shared_resources = this.shared_resources;
         options.no_delay = no_delay;
         options.unix_socket_path = idup(server_config.unix_socket_path());
         options.credentials_filename = "etc/credentials";
@@ -181,5 +191,22 @@ public class DmqNode
     override protected istring[] record_action_counter_ids ( )
     {
         return ["pushed", "popped"];
+    }
+
+    /***************************************************************************
+
+        Calls `callback` with a `RequestResources` object whose scope is limited
+        to the run-time of `callback`.
+
+        Params:
+            callback = a callback to call with a `RequestResources` object
+
+    ***************************************************************************/
+
+    override protected void getResourceAcquirer (
+        void delegate ( Object request_resources ) callback )
+    {
+        scope request_resources = this.shared_resources.new RequestResources;
+        callback(request_resources);
     }
 }

@@ -350,7 +350,7 @@ class Consume: RecordChecker
     ***************************************************************************/
 
     private void notifier ( DmqClient.Neo.Consume.Notification info,
-                            DmqClient.Neo.Consume.Args args )
+                            Const!(DmqClient.Neo.Consume.Args) args )
     {
         with (info) switch (active)
         {
@@ -420,7 +420,7 @@ class Pop: RecordChecker
     ***************************************************************************/
 
     private void notifier ( DmqClient.Neo.Pop.Notification info,
-                    DmqClient.Neo.Pop.Args args )
+                            Const!(DmqClient.Neo.Pop.Args) args )
     {
         with (info) switch (active)
         {
@@ -500,7 +500,7 @@ class PopEmpty
     ***************************************************************************/
 
     private void notifier ( DmqClient.Neo.Pop.Notification info,
-                            DmqClient.Neo.Pop.Args args )
+                            Const!(DmqClient.Neo.Pop.Args) args )
     {
         with (info) switch (active)
         {
