@@ -33,7 +33,7 @@ import ocean.sys.Environment;
 import ocean.util.container.mem.MemManager;
 import ocean.util.container.queue.FlexibleRingQueue;
 import ocean.util.container.queue.model.IQueueInfo;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 import core.stdc.ctype;
 import ocean.transition;
 

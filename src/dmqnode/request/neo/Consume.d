@@ -12,7 +12,6 @@
 
 module dmqnode.request.neo.Consume;
 
-import dmqnode.request.neo.Consume_v2;
 
 import dmqproto.node.neo.request.Consume;
 
@@ -49,15 +48,9 @@ public void handle ( Object shared_resources, RequestOnConn connection,
 
     switch ( cmdver )
     {
-        case 1:
+        case 3:
             scope rq_resources = dmq_shared_resources.new RequestResources;
-            scope rq = new ConsumeImpl_v1(rq_resources);
-            rq.handle(connection, msg_payload);
-            break;
-
-        case 2:
-            scope rq_resources = dmq_shared_resources.new RequestResources;
-            scope rq = new ConsumeImpl_v2(rq_resources);
+            scope rq = new ConsumeImpl_v3(rq_resources);
             rq.handle(connection, msg_payload);
             break;
 
@@ -75,11 +68,11 @@ public void handle ( Object shared_resources, RequestOnConn connection,
 
 /*******************************************************************************
 
-    DMQ node implementation of the v0 Consume request protocol.
+    DMQ node implementation of the v3 Consume request protocol.
 
 *******************************************************************************/
 
-public scope class ConsumeImpl_v1 : ConsumeProtocol_v1, StorageEngine.IConsumer
+public scope class ConsumeImpl_v3 : ConsumeProtocol_v3, StorageEngine.IConsumer
 {
     private SharedResources.RequestResources resources;
 
@@ -109,22 +102,24 @@ public scope class ConsumeImpl_v1 : ConsumeProtocol_v1, StorageEngine.IConsumer
 
     /***************************************************************************
 
-        Performs any logic needed to start consuming from the channel of the
-        given name.
+        Performs any logic needed to subscribe to and start consuming from the
+        channel of the given name.
 
         Params:
             channel_name = channel to consume from
+            subscriber_name = the identifying name of the subscriber
 
         Returns:
             `true` if the channel may be used
 
     ***************************************************************************/
 
-    override protected bool prepareChannel ( cstring channel_name )
+    override protected bool prepareChannel ( cstring channel_name,
+                                             cstring subscriber_name )
     {
         if (auto channel = this.resources.storage_channels.getCreate(channel_name))
         {
-            this.storage_engine = channel.subscribe("");
+            this.storage_engine = channel.subscribe(idup(subscriber_name));
 
             if ( this.storage_engine !is null )
             {
@@ -189,6 +184,11 @@ public scope class ConsumeImpl_v1 : ConsumeProtocol_v1, StorageEngine.IConsumer
             case DataReady:
                 this.dataReady();
                 break;
+
+            case Flush:
+                this.flushBatch();
+                break;
+
             case Finish:
                 this.channelRemoved();
                 break;

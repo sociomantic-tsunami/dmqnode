@@ -38,7 +38,7 @@ import core.sys.posix.signal: SIGINT, SIGTERM, SIGQUIT;
 import ocean.sys.CpuAffinity;
 import ocean.util.app.DaemonApp;
 import ConfigReader = ocean.util.config.ConfigFiller;
-import ocean.util.log.Log;
+import ocean.util.log.Logger;
 import ocean.transition;
 
 import ocean.transition;

@@ -27,7 +27,7 @@ class PosixFile
     import core.sys.posix.unistd: lseek, ftruncate, fdatasync;
     import core.stdc.stdio: SEEK_SET;
     import ocean.transition;
-    import ocean.util.log.Log;
+    import ocean.util.log.Logger;
 
     /***************************************************************************
 
