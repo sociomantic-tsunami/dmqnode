@@ -129,6 +129,14 @@ public class DmqNodeServer : DaemonApp
 
     /***************************************************************************
 
+        The signal codes that request a shutdown.
+
+    ***************************************************************************/
+
+    private const shutdown_signals = [SIGINT, SIGTERM, SIGQUIT];
+
+    /***************************************************************************
+
          Constructor
 
     ***************************************************************************/
@@ -139,7 +147,7 @@ public class DmqNodeServer : DaemonApp
         const app_desc = "dmqnode: distributed message queue server node.";
 
         DaemonApp.OptionalSettings settings;
-        settings.signals = [SIGINT, SIGTERM, SIGQUIT];
+        settings.signals = shutdown_signals.dup;
         this.epoll = new EpollSelectDispatcher;
 
         super(app_name, app_desc, version_info, settings);
@@ -265,7 +273,7 @@ public class DmqNodeServer : DaemonApp
 
     /***************************************************************************
 
-        SIGINT handler.
+        Signal handler.
 
         Firstly unregisters all periodics. (Any periodics which are about to
         fire in epoll will still fire, but the setting of the 'terminating' flag
@@ -285,10 +293,17 @@ public class DmqNodeServer : DaemonApp
 
     override public void onSignal ( int signal )
     {
-        this.node.stopListener(this.epoll);
-        this.node.shutdown;
+        foreach (s; shutdown_signals)
+        {
+            if (signal == s)
+            {
+                this.node.stopListener(this.epoll);
+                this.node.shutdown;
 
-        this.epoll.shutdown;
+                this.epoll.shutdown;
+                break;
+            }
+        }
     }
 
 
