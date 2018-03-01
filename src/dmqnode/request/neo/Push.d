@@ -14,6 +14,7 @@ module dmqnode.request.neo.Push;
 
 import dmqnode.connection.neo.SharedResources;
 import dmqproto.node.neo.request.Push;
+import dmqproto.node.neo.request.core.IRequestResources;
 
 import dmqnode.util.Downcast;
 import ocean.transition;

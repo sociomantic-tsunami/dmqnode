@@ -210,6 +210,8 @@ class DiskOverflow: DiskOverflowInfo
     import dmqnode.storage.engine.overflow.RecordHeader;
     import dmqnode.storage.engine.OverflowChannel;
 
+    import swarm.neo.protocol.socket.uio_const: iovec_const;
+
     import ocean.core.Enforce: enforce;
     import ocean.io.FilePath;
     import core.stdc.errno: errno;
@@ -695,7 +697,7 @@ class DiskOverflow: DiskOverflowInfo
         header.length  = data.length;
         header.setParity();
 
-        IoVec.iovec_const[2] iov_buf;
+        iovec_const[2] iov_buf;
         auto iov = IoVec(iov_buf);
         iov[0]   = this.dump(header);
         iov[1]   = data;

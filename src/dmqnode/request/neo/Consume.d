@@ -15,6 +15,7 @@ module dmqnode.request.neo.Consume;
 
 import dmqproto.node.neo.request.Consume;
 
+import dmqproto.node.neo.request.core.IRequestResources;
 import dmqnode.connection.neo.SharedResources;
 import dmqnode.storage.model.StorageEngine;
 

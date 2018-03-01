@@ -15,6 +15,7 @@ module dmqnode.storage.Ring;
 
 import dmqnode.config.ChannelSizeConfig;
 import dmqnode.storage.engine.DiskOverflow;
+import dmqnode.storage.engine.overflow.Constants;
 import dmqnode.storage.model.StorageChannels;
 import dmqnode.storage.model.StorageEngine;
 // This import is not ordered, but there is a circular dependency
@@ -76,7 +77,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    private class Ring : StorageEngine
+    class Ring : StorageEngine
     {
         /***********************************************************************
 
@@ -860,8 +861,8 @@ public class RingNode : StorageChannels
                                     info.name);
                             break;
 
-                        case this.overflow.Constants.datafile_suffix,
-                             this.overflow.Constants.indexfile_suffix:
+                        case Constants.datafile_suffix,
+                             Constants.indexfile_suffix:
                             break;
 
                         default:
