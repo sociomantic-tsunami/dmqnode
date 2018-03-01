@@ -16,6 +16,7 @@ import dmqnode.connection.neo.SharedResources;
 import dmqnode.storage.model.StorageEngine;
 
 import dmqproto.node.neo.request.Pop;
+import dmqproto.node.neo.request.core.IRequestResources;
 
 import dmqnode.util.Downcast;
 import ocean.transition;

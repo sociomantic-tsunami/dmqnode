@@ -17,6 +17,7 @@ import dmqnode.storage.engine.overflow.file.DataFile;
 /// Tests if truncating a file from the beginning is supported.
 class HeadTruncationTestFile: DataFile
 {
+    import dmqnode.storage.engine.overflow.file.FileException;
     import core.sys.posix.stdlib: mkstemp;
     import core.stdc.stdio: SEEK_END;
     import ocean.transition;

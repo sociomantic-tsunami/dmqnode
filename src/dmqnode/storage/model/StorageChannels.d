@@ -562,6 +562,7 @@ public abstract class StorageChannels :
 
 version (UnitTest)
 {
+    import dmqnode.storage.model.StorageEngine;
     import ocean.core.Test;
     import dmqnode.util.Downcast;
 }
