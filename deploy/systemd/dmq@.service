@@ -1,0 +1,27 @@
+[Unit]
+Description=Distributed Message Queue instance %I
+AssertPathExists=/srv/dmqnode/dmqnode-%i
+Requires=network-online.target local-fs.target
+After=network-online.target local-fs.target
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/dmqnode/dmqnode-%i/
+ExecStart=/usr/sbin/dmqnode -c /srv/dmqnode/dmqnode-%i/etc/config.ini
+ExecReload=/bin/kill -HUP $MAINPID
+
+Restart=on-failure
+User=dmqnode
+Group=core
+
+# Could be even 1000 (to disable oom killing),
+# but set to -950 for the OOM killer to be able to kill an instance
+# of DMQ node if the server is about to die.
+OOMScoreAdjust=-950
+
+# Note infinity is used instead of unlimited
+LimitNOFILE=100000:100000
+LimitCORE=infinity:infinity
+
+[Install]
+WantedBy = multi-user.target
