@@ -17,6 +17,8 @@ import dmqnode.request.model.IDmqRequestResources;
 
 import Protocol = dmqproto.node.request.PushMulti;
 
+import ocean.core.Verify;
+
 /*******************************************************************************
 
     PushMulti request
@@ -93,7 +95,7 @@ public scope class PushMultiRequest : Protocol.PushMulti
     override protected void pushValue ( cstring channel_name, in void[] value )
     {
         auto channel = this.resources.storage_channels.getCreate(channel_name);
-        assert (channel !is null); // already verified in this.prepareChannels
+        verify(channel !is null); // already verified in this.prepareChannels
         foreach (subscriber; channel)
             subscriber.push(cast(char[]) value);
     }

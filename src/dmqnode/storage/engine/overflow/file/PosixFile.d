@@ -26,6 +26,7 @@ class PosixFile
     import unistd = core.sys.posix.unistd: close, unlink;
     import core.sys.posix.unistd: lseek, ftruncate, fdatasync;
     import core.stdc.stdio: SEEK_SET;
+    import ocean.core.Verify;
     import ocean.transition;
     import ocean.util.log.Logger;
 
@@ -136,16 +137,14 @@ class PosixFile
 
     public ulong seek ( off_t offset, int whence, cstring errmsg,
                         istring file = __FILE__, long line = __LINE__ )
-    in
-    {
-        assert(this.fd >= 0, "File " ~ this.name ~ " not opened");
-    }
     out (pos)
     {
         assert(pos <= off_t.max);
     }
     body
     {
+        this.verifyFileOpen();
+
         offset = lseek(this.fd, offset, whence);
 
         this.enforce(offset >= 0, errmsg, "lseek", file, line);
@@ -160,12 +159,8 @@ class PosixFile
     ***************************************************************************/
 
     public void reset ( )
-    in
     {
-        assert(this.fd >= 0, "File " ~ this.name ~ " not opened");
-    }
-    body
-    {
+        this.verifyFileOpen();
         /*
          * Seek to the beginning because ftruncate() does not change the file
          * position.
@@ -184,12 +179,8 @@ class PosixFile
     ***************************************************************************/
 
     public void flush ( )
-    in
     {
-        assert(this.fd >= 0, "File " ~ this.name ~ " not opened");
-    }
-    body
-    {
+        this.verifyFileOpen();
         this.enforce(!fdatasync(this.fd), "flush: unable to synchronise");
     }
 
@@ -201,12 +192,8 @@ class PosixFile
     ***************************************************************************/
 
     public void close ( )
-    in
     {
-        assert(this.fd >= 0, "File " ~ this.name ~ " not opened");
-    }
-    body
-    {
+        this.verifyFileOpen();
         this.enforce(
             !this.restartInterrupted(unistd.close(this.fd)),
             "unable to close"
@@ -223,12 +210,8 @@ class PosixFile
     ***************************************************************************/
 
     public void remove ( )
-    in
     {
-        assert(this.fd >= 0, "File " ~ this.name ~ " not opened");
-    }
-    body
-    {
+        this.verifyFileOpen();
         this.enforce(!unistd.unlink(this.namec), "unable to delete");
         this.enforce(
             !this.restartInterrupted(unistd.close(this.fd)),
@@ -310,5 +293,20 @@ class PosixFile
         while (x < 0 && errno == EINTR);
 
         return x;
+    }
+
+    /***************************************************************************
+
+        Verifies the file is open i.e. `close` has not been called before.
+
+        Throws:
+            `SanityException` if the file is not open i.e. `close` not been
+            called before.
+
+    ***************************************************************************/
+
+    protected void verifyFileOpen ( istring file = __FILE__, int line = __LINE__ )
+    {
+        verify(this.fd >= 0, "File " ~ this.name ~ " not opened", file, line);
     }
 }

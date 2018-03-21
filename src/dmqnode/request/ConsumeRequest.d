@@ -20,6 +20,8 @@ import Protocol = dmqproto.node.request.Consume;
 
 import ocean.core.Array : copy;
 
+import ocean.core.Verify;
+
 
 /*******************************************************************************
 
@@ -213,7 +215,7 @@ public scope class ConsumeRequest : Protocol.Consume, StorageEngine.IConsumer
                 break;
 
             case Deletion, None:
-                assert(false);
+                verify(false);
 
             version (D_Version2) {} else default:
                 assert(false);

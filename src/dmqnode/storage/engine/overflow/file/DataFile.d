@@ -42,6 +42,7 @@ class DataFile: PosixFile
     import core.sys.posix.sys.types: off_t, ssize_t;
     import unistd = core.sys.posix.unistd: read, write, pread, pwrite;
     import uio = core.sys.posix.sys.uio: iovec, writev;
+    import ocean.core.Verify;
     import ocean.transition;
 
     /***************************************************************************
@@ -104,16 +105,14 @@ class DataFile: PosixFile
     public size_t ptransmit ( bool output )
         ( IOVoid!(output)[] data, ref off_t pos, cstring errmsg,
           istring file = __FILE__, long line = __LINE__ )
-    in
-    {
-        assert(pos >= 0);
-    }
     out (n)
     {
         assert(n <= data.length);
     }
     body
     {
+        verify(pos >= 0);
+
         for (auto left = data; left.length;)
         {
             static if (output)
@@ -362,6 +361,7 @@ template IOVoid ( bool output )
 struct IoVec
 {
     import swarm.neo.protocol.socket.uio_const: iovec_const;
+    import ocean.core.Verify;
     import ocean.transition;
 
     /***************************************************************************
@@ -403,12 +403,9 @@ struct IoVec
     ***************************************************************************/
 
     size_t advance ( size_t n )
-    in
     {
-        assert(n <= this.length);
-    }
-    body
-    {
+        verify(n <= this.length);
+
         if (n)
         {
             if (n == this.length)

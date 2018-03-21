@@ -217,6 +217,7 @@ class DiskOverflow: DiskOverflowInfo
     import core.stdc.errno: errno;
     import core.sys.posix.sys.types: off_t;
     import core.stdc.stdio: SEEK_CUR, SEEK_END;
+    import ocean.core.Verify;
     import ocean.transition;
     import ocean.util.log.Logger;
 
@@ -754,7 +755,7 @@ class DiskOverflow: DiskOverflowInfo
         off_t pos = this.readHeader(header, channel.first_offset);
         enforce(this.e, header.channel == channel.id, "mismatch of channel ID in record header read from file");
         void[] data = get_buffer(header.length);
-        assert(data.length == header.length, "pop: array returned by get_buffer not of requested size");
+        verify(data.length == header.length, "pop: array returned by get_buffer not of requested size");
 
         this.data.enforce(
             !this.data.pread(data, pos, "unable to read record data"),

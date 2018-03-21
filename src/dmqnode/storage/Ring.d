@@ -150,17 +150,17 @@ public class RingNode : StorageChannels
             Params:
                 storage_name = the name of this storage
 
+            Throws:
+                `Exception` if a shutdown is currently in process.
+
         ***********************************************************************/
 
         public this ( cstring storage_name )
-        in
         {
-            assert(!this.outer.shutting_down,
+            enforce(!this.outer.shutting_down, cast(istring)(
                    "Attempted to create storage '" ~ storage_name ~
-                   "' during shutdown");
-        }
-        body
-        {
+                   "' during shutdown"));
+
             // The super constructor calls this.initialise, which uses
             // this.file_path.
             this.file_path = new FilePath;
