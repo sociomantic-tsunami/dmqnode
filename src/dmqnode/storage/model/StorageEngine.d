@@ -26,6 +26,7 @@ import ocean.core.Array;
 import ocean.io.FilePath;
 import ocean.io.Path : normalize, PathParser;
 import ocean.sys.Environment;
+import ocean.core.Verify;
 import ocean.transition;
 
 import swarm.node.storage.listeners.Listeners;
@@ -66,7 +67,7 @@ public abstract class StorageEngine : IStorageEngine
                     break;
 
                 case code.Deletion, code.None:
-                    assert(false);
+                    verify(false);
 
                 version (D_Version2) {} else default:
                     assert(false);

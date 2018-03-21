@@ -20,7 +20,7 @@ import Protocol = dmqproto.node.request.Produce;
 
 import swarm.common.request.helper.LoopCeder;
 
-
+import ocean.core.Verify;
 
 /*******************************************************************************
 
@@ -99,7 +99,7 @@ public scope class ProduceRequest : Protocol.Produce
 
     override protected void pushRecord ( cstring channel_name, cstring value )
     {
-        assert (this.storage_channel !is null);
+        verify(this.storage_channel !is null);
         foreach (subscriber; this.storage_channel)
             subscriber.push(value);
         this.resources.loop_ceder.handleCeding();

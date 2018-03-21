@@ -18,6 +18,8 @@ import dmqnode.storage.model.StorageEngine;
 
 import Protocol = dmqproto.node.request.Push;
 
+import ocean.core.Verify;
+
 /*******************************************************************************
 
     Push request
@@ -81,7 +83,7 @@ public scope class PushRequest : Protocol.Push
 
     override protected void pushValue ( cstring channel_name, in void[] value )
     {
-        assert (this.storage_channel);
+        verify(this.storage_channel !is null);
         // legacy char[] values :(
         foreach (subscriber; this.storage_channel)
             subscriber.push(cast(char[]) value);

@@ -36,6 +36,7 @@ abstract class IChannel: IStorageEngine
     import dmqnode.storage.model.StorageEngine;
     import core.stdc.string: memchr;
     import ocean.core.Enforce;
+    import ocean.core.Verify;
 
     /***************************************************************************
 
@@ -259,12 +260,9 @@ abstract class IChannel: IStorageEngine
     ***************************************************************************/
 
     public StorageEngine addSubscriber ( cstring storage_name )
-    in
     {
-        assert(!this.is_reset);
-    }
-    body
-    {
+        verify(!this.is_reset);
+
         enforce!(AddSubscriberException)(
             this.initial_storage is null, cast(istring)("Cannot add \"" ~
             storage_name ~ "\": Channel \"" ~ this.id_ ~ "\"" ~
@@ -427,7 +425,7 @@ abstract class IChannel: IStorageEngine
     }
     body
     {
-        assert(!this.is_reset);
+        verify(!this.is_reset);
 
         if (this.initial_storage !is null)
         {
