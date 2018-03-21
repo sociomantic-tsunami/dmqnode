@@ -361,14 +361,6 @@ template IOVoid ( bool output )
 
 struct IoVec
 {
-    version (D_Version2)
-    {
-        import core.exception: onRangeError;
-        alias onRangeError onArrayBoundsError;
-    }
-    else
-        import ocean.core.ExceptionDefinitions: onArrayBoundsError;
-
     import swarm.neo.protocol.socket.uio_const: iovec_const;
     import ocean.transition;
 
@@ -453,14 +445,6 @@ struct IoVec
     ***************************************************************************/
 
     Const!(void)[] opIndex ( size_t i )
-    in
-    {
-        if (i >= this.chunks.length)
-        {
-            onArrayBoundsError(__FILE__, __LINE__);
-        }
-    }
-    body
     {
         with (this.chunks[i]) return iov_base[0 .. iov_len];
     }
@@ -472,14 +456,6 @@ struct IoVec
     ***************************************************************************/
 
     Const!(void)[] opIndexAssign ( Const!(void)[] data, size_t i )
-    in
-    {
-        if (i >= this.chunks.length)
-        {
-            onArrayBoundsError(__FILE__, __LINE__);
-        }
-    }
-    body
     {
         with (this.chunks[i])
         {
