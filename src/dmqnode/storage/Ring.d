@@ -542,9 +542,7 @@ public class RingNode : StorageChannels
 
         override protected void recycleStorageEngine ( StorageEngine storage )
         {
-            auto ring = cast(Ring)storage;
-            assert(ring);
-            this.outer.storage_pool.recycle(ring);
+            this.outer.storage_pool.recycle(downcastAssert!(Ring)(storage));
         }
     }
 
@@ -898,9 +896,7 @@ public class RingNode : StorageChannels
         {
             foreach (storage_; channel)
             {
-                auto storage = cast(Ring)storage_;
-                assert(storage);
-                downcastAssert!(Ring)(storage).deleteDumpFile();
+                downcastAssert!(Ring)(storage_).deleteDumpFile();
             }
         }
     }
