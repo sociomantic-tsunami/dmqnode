@@ -48,7 +48,7 @@ public abstract class StorageEngine : IStorageEngine
 
         override protected void trigger_ ( Listener.Code code )
         {
-            switch ( code )
+            final switch ( code )
             {
                 case code.DataReady:
                     auto listener = this.listeners.next();
@@ -65,7 +65,10 @@ public abstract class StorageEngine : IStorageEngine
                     super.trigger_(code);
                     break;
 
-                default:
+                case code.Deletion, code.None:
+                    assert(false);
+
+                version (D_Version2) {} else default:
                     assert(false);
             }
         }

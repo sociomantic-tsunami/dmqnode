@@ -197,7 +197,7 @@ public scope class ConsumeRequest : Protocol.Consume, StorageEngine.IConsumer
 
     public void trigger ( Code code )
     {
-        with ( Code ) switch ( code )
+        with ( Code ) final switch ( code )
         {
             case DataReady:
                 // No action necessary, as the handle__() method always tries to
@@ -212,7 +212,10 @@ public scope class ConsumeRequest : Protocol.Consume, StorageEngine.IConsumer
                 this.finish_trigger = true;
                 break;
 
-            default:
+            case Deletion, None:
+                assert(false);
+
+            version (D_Version2) {} else default:
                 assert(false);
         }
 
