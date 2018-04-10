@@ -315,6 +315,7 @@ public class DmqNodeServer : DaemonApp
 
     override protected void onStatsTimer ( )
     {
+        this.reportSystemStats();
         this.dmq_stats.log();
 
         auto stats_log = this.stats_ext.stats_log;
