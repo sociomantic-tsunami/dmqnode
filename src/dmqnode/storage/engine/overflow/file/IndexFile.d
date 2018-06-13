@@ -27,6 +27,16 @@ import dmqnode.storage.engine.overflow.file.PosixFile;
 
 import ocean.transition;
 
+version (D_Version2)
+    mixin(`
+        version(assert)
+            enum d2_assert = true;
+        else
+            enum d2_assert = false;
+    `);
+else
+    const d2_assert = false;
+
 class IndexFile: PosixFile
 {
     import ocean.core.Enforce: enforceImpl;
@@ -79,8 +89,8 @@ class IndexFile: PosixFile
 
     ***************************************************************************/
 
-    version (D_Version2)
-        mixin("version(assert) private bool ctor_returned = false;");
+    static if (d2_assert)
+        private bool ctor_returned = false;
 
     /**************************************************************************/
 
@@ -88,8 +98,9 @@ class IndexFile: PosixFile
     {
         version (D_Version2)
         {
-            if (this.ctor_returned)
-                assert(this.stream);
+            static if (d2_assert)
+                if (this.ctor_returned)
+                    assert(this.stream);
         }
         else
             assert(this.stream);
@@ -114,8 +125,8 @@ class IndexFile: PosixFile
         this.stream = fdopen(this.fd, "w+".ptr);
         this.enforce(this.stream, "unable to fdopen");
 
-        version (D_Version2)
-            mixin("version(assert) this.ctor_returned = true;");
+        static if (d2_assert)
+            this.ctor_returned = true;
     }
 
     /***************************************************************************
