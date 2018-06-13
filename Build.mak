@@ -2,6 +2,9 @@ ifeq ($(DVER),1)
 	override DFLAGS += -v2 -v2=-static-arr-params -v2=-volatile
 else
 	DC = dmd-transitional
+	ifeq ($F, production)
+		override DFLAGS += -release
+	endif
 endif
 
 override LDFLAGS += -llzo2 -lebtree -lrt -lgcrypt -lgpg-error -lglib-2.0
