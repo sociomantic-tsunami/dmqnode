@@ -317,6 +317,9 @@ public class RingNode : StorageChannels
         {
             void[] allocValue ( size_t n )
             {
+                if (value.length < n)
+                    enableStomping(value);
+
                 value.length = n;
                 return value;
             }
