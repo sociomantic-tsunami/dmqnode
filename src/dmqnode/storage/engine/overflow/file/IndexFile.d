@@ -237,16 +237,18 @@ class IndexFile: PosixFile
     {
         this.reset();
 
-        this.fmt_io_signal_blocker.callBlocked({
-            iterate((cstring name, ChannelMetadata channel)
-            {
-                int n = fprintf(this.stream, "%.*s %lu %llu %lld %lld\n".ptr,
-                                name.length, name.ptr,
-                                channel.records, channel.bytes,
-                                channel.first_offset, channel.last_offset);
+        scope on_channel = (cstring name, ChannelMetadata channel)
+        {
+            int n = fprintf(this.stream, "%.*s %lu %llu %lld %lld\n".ptr,
+                            name.length, name.ptr,
+                            channel.records, channel.bytes,
+                            channel.first_offset, channel.last_offset);
 
-                this.enforce(n >= 0, "error writing index");
-            });
+            this.enforce(n >= 0, "error writing index");
+        };
+
+        this.fmt_io_signal_blocker.callBlocked({
+            iterate(on_channel);
             this.enforce(!fflush(this.stream), "error flushing index");
         }());
     }

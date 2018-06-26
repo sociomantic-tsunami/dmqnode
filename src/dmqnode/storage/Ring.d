@@ -315,21 +315,21 @@ public class RingNode : StorageChannels
 
         override public typeof(this) pop ( ref char[] value )
         {
-            void[] allocValue ( size_t n )
+            scope allocValue = delegate void[] ( size_t n )
             {
                 if (value.length < n)
                     enableStomping(value);
 
                 value.length = n;
                 return value;
-            }
+            };
 
             if (void[] item = this.queue.pop())
             {
                  allocValue(item.length)[] = item[];
                  this.outer.dmqnode.record_action_counters.increment("popped", value.length);
             }
-            else if (this.overflow.pop(&allocValue))
+            else if (this.overflow.pop(allocValue))
             {
                  this.outer.dmqnode.record_action_counters.increment("popped", value.length);
             }
