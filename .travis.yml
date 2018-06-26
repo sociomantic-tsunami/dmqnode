@@ -45,3 +45,8 @@ jobs:
           # override them.
           script: beaver dlang make pkg && beaver bintray upload -d sociomantic-tsunami/nodes/dmqnode
                   build/last/pkg/*.deb
+        - stage: Closure allocation check
+          env: DMD=2.071.2.s* DIST=xenial F=devel
+          # before_install: and install: are inherited and we don't need to
+          # override them.
+          script: beaver dlang install && ci/closures.sh
