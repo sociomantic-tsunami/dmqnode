@@ -6,7 +6,7 @@
 	url = https://github.com/sociomantic-tsunami/ocean.git
 [submodule "dmqproto"]
 	path = submodules/dmqproto
-	url = https://github.com/sociomantic-tsunami/dmqproto.git
+	url = https://github.com/david-eckardt-sociomantic/dmqproto.git
 [submodule "turtle"]
 	path = submodules/turtle
 	url = https://github.com/sociomantic-tsunami/turtle.git

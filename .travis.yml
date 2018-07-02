@@ -19,11 +19,11 @@ env:
         # Make sure beaver is in the PATH
         - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
     matrix:
-        - DMD=1.081.* DIST=xenial F=production
+        - DMD=1.081.* DIST=xenial F=production V=1
         - DMD=1.081.* DIST=xenial F=devel
-        - DMD=2.071.2.s* DIST=xenial F=production
+        - DMD=2.071.2.s* DIST=xenial F=production V=1
         - DMD=2.071.2.s* DIST=xenial F=devel
-        - DMD=2.078.* DIST=xenial F=production
+        - DMD=2.078.* DIST=xenial F=production V=1
         - DMD=2.078.* DIST=xenial F=devel
 
 
