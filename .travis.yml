@@ -11,42 +11,65 @@ services:
 git:
     submodules: false
 
+# Global environment variables
+env:
+    global:
+        - DIST=xenial
+        - COV=1
+        # Make sure beaver is in the PATH
+        - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
+
 # Do a shallow submodule fetch
 before_install: git submodule update --init
 
-env:
-    global:
-        # Make sure beaver is in the PATH
-        - PATH="$(git config -f .gitmodules submodule.beaver.path)/bin:$PATH"
-    matrix:
-        - DMD=1.081.* DIST=xenial F=production
-        - DMD=1.081.* DIST=xenial F=devel
-        - DMD=2.071.2.s* DIST=xenial F=production
-        - DMD=2.071.2.s* DIST=xenial F=devel
-        - DMD=2.078.* DIST=xenial F=production
-        - DMD=2.078.* DIST=xenial F=devel
-
-
-install: beaver dlang install
-
-# Build packages too, this should be done by beaver:
-# https://github.com/sociomantic-tsunami/beaver/issues/34
-script: BEAVER_DOCKER_VARS="F" beaver dlang make && beaver dlang make pkg
-
+# Basic config is inherited from the global scope
 jobs:
-    include:
-        - stage: Upload Package
-          # We need to include the exclusion of D2 tags because this "if"
-          # replaces the global one
+    templates:
+        - &test-matrix
+          stage: Test
+          after_success: beaver dlang codecov
+          script:
+              - set -e # Do not continue on failure
+              - beaver dlang install
+              - beaver dlang make
+        - &package-matrix
+          stage: Build and upload packages
           if: tag IS present
-          # Which package to deploy
-          env: DMD=1.081.* DIST=xenial F=production
-          # before_install: and install: are inherited and we don't need to
-          # override them.
-          script: beaver dlang make pkg && beaver bintray upload -d sociomantic-tsunami/nodes/dmqnode
-                  build/last/pkg/*.deb
+          script:
+              - set -e # Do not continue on failure
+              - beaver dlang install
+              - beaver dlang make
+              - beaver dlang make pkg
+              - beaver bintray upload -d sociomantic-tsunami/nodes/dmqnode build/production/pkg/*.deb
+
+    include:
+        # Test matrix
+        - <<: *test-matrix
+          env: DMD=1.082.* F=production
+        - <<: *test-matrix
+          env: DMD=1.082.* F=devel
+        - <<: *test-matrix
+          env: DMD=2.071.2.s* F=production
+        - <<: *test-matrix
+          env: DMD=2.071.2.s* F=devel
+        - <<: *test-matrix
+          env: DMD=2.078.* F=production
+        - <<: *test-matrix
+          env: DMD=2.078.* F=devel
+
+        # Test deployment docker image generation
+        - stage: Test
+          script:
+              - docker build --build-arg DMD=2.071.2.s* --build-arg DIST=xenial
+                -t dmqnode -f docker/Dockerfile.dmqnode .
+
+        # Extra sanity checks
         - stage: Closure allocation check
           env: DMD=2.071.2.s* DIST=xenial F=devel
-          # before_install: and install: are inherited and we don't need to
-          # override them.
           script: beaver dlang install && ci/closures.sh
+
+        # Package matrix
+        - <<: *package-matrix
+          env: DMD=1.082.* F=production
+        - <<: *package-matrix
+          env: DMD=2.071.2.s* F=production
