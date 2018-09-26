@@ -5,10 +5,6 @@ OPTS.update(
     description = FUN.desc('common files'),
     architecture = 'all',
     depends = 'dmqnode',
-    deb_upstart = [
-        'deploy/upstart/dmq.conf',
-        'deploy/upstart/dmqnode-instance.conf',
-    ],
 )
 
 # Replace existing args without rebinding
