@@ -39,4 +39,4 @@ allunittest: override LDFLAGS += -lpcre
 $O/pkg-dmqnode.stamp: $B/dmqnode README.rst
 
 $O/pkg-dmqnode-common.stamp: \
-       $(PKG)/defaults.py README.rst deploy/upstart/dmq.conf
+       $(PKG)/defaults.py README.rst
