@@ -212,6 +212,7 @@ class DiskOverflow: DiskOverflowInfo
 
     import swarm.neo.protocol.socket.uio_const: iovec_const;
 
+    import ocean.core.Array: sort;
     import ocean.core.Enforce: enforce;
     import ocean.io.FilePath;
     import core.stdc.errno: errno;
