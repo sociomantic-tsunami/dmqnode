@@ -217,6 +217,7 @@ class DiskOverflow: DiskOverflowInfo
     import core.stdc.errno: errno;
     import core.sys.posix.sys.types: off_t;
     import core.stdc.stdio: SEEK_CUR, SEEK_END;
+    import ocean.core.array.Mutation;
     import ocean.core.Verify;
     import ocean.transition;
     import ocean.util.log.Logger;
