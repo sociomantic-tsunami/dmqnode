@@ -211,7 +211,7 @@ public class DmqNodeServer : DaemonApp
         // because `startEventHandling` creates `this.timer_ext`.
         this.timer_ext.register(&this.flushNode,
             this.performance_config.write_flush_ms / 1000.0);
-        this.timer_ext.register(&this.flushNode,
+        this.timer_ext.register(&this.writeDiskOverflowIndex,
             this.overflow_config.write_index_ms / 1000.0);
 
         this.node.register(this.epoll);
