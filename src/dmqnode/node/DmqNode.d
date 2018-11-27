@@ -136,8 +136,8 @@ public class DmqNode
 
     /***************************************************************************
 
-        Returns:
-            maximum number of bytes per channel
+        Writes the disk overflow index to the disk and tries to minimize
+        the data file.
 
     ***************************************************************************/
 
