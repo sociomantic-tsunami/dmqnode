@@ -7,7 +7,7 @@ COPY . /project/
 WORKDIR /project/
 # Redefine arguments as env vars to be used inside build.sh script:
 ARG DIST=xenial
-ARG DMD=1.081.*
+ARG DMD=2.078.*
 ENV DMD=$DMD DIST=$DIST
 RUN docker/build.sh
 
