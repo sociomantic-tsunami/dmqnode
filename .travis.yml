@@ -64,7 +64,7 @@ jobs:
         - stage: Test
           script:
               - docker build --build-arg DMD=2.071.2.s* --build-arg DIST=xenial
-                -t dmqnode -f docker/Dockerfile.dmqnode .
+                -t dmqnode .
 
         # Extra sanity checks
         - stage: Closure allocation check
