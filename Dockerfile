@@ -1,7 +1,7 @@
 # Duplicate definition of DIST before FROM is needed to be able to use it
 # in docker image name:
 ARG  DIST=xenial
-FROM sociomantictsunami/develdlang:$DIST-v6 as builder
+FROM sociomantictsunami/develdlang:$DIST-v7 as builder
 # Copies the whole project as makd needs git history:
 COPY . /project/
 WORKDIR /project/
@@ -14,7 +14,7 @@ RUN docker/build.sh
 ARG DIST=xenial
 # For now plain ubuntu image is used as base for simplicity. It certainly can be
 # optimized to bare minimum but right now it is not important:
-FROM sociomantictsunami/runtimebase:$DIST-v6
+FROM sociomantictsunami/runtimebase:$DIST-v7
 
 # Set up directories and install the node
 COPY --from=builder /project/build/production/pkg/ /packages/
