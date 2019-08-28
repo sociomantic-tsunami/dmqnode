@@ -156,7 +156,7 @@ public class DmqPerformance : CliApp
     {
         static immutable char[] name = "DMQ performance tester";
         static immutable char[] desc = "performing (-c) pushes then (-c) pops each cycle,"
-                            " with up to (-p) requests in parallel";
+                          ~ " with up to (-p) requests in parallel";
         super(name, desc, version_info);
     }
 
@@ -176,7 +176,7 @@ public class DmqPerformance : CliApp
         args("source").required.params(1).aliased('S').
           help("config file listing DMQ nodes to connect to");
         args("count").aliased('c').params(1).defaults("1000").
-          help("the number of pushes / pops to perform sequentially before"
+          help("the number of pushes / pops to perform sequentially before" ~
           " switching from pushing to popping or vice versa (default is 1000)");
         args("parallel").aliased('p').params(1).defaults("1").
          help("the number of parallel pushes / pops to perform (default is 1)");
@@ -213,7 +213,7 @@ public class DmqPerformance : CliApp
         this.dmq.addNodes(args.getString("source"));
 
         Stdout.formatln("DMQ performance tester:");
-        Stdout.formatln("    performing {} pushes then {} pops each cycle, "
+        Stdout.formatln("    performing {} pushes then {} pops each cycle, " ~
             "with up to {} requests in parallel", count, count, parallel);
         Stdout.formatln("    pushing records of {} bytes", this.record.length);
 
