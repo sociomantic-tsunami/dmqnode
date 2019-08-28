@@ -97,7 +97,7 @@ public class DmqNode
             server_config.backlog);
 
         auto command = DmqConst.Command();
-        const cmd_codes =
+        static immutable cmd_codes =
         [
             command.E.Push, command.E.PushMulti,
             command.E.Produce, command.E.ProduceMulti,
@@ -165,7 +165,7 @@ public class DmqNode
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref RingNode.Ring channel ) dg )
+    public int opApply ( scope int delegate ( ref RingNode.Ring channel ) dg )
     {
         return super.opApply((ref IStorageEngineInfo channel)
         {
@@ -204,7 +204,7 @@ public class DmqNode
     ***************************************************************************/
 
     override protected void getResourceAcquirer (
-        void delegate ( Object request_resources ) callback )
+        scope void delegate ( Object request_resources ) callback )
     {
         scope request_resources = this.shared_resources.new RequestResources;
         callback(request_resources);

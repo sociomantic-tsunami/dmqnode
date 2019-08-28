@@ -246,7 +246,7 @@ class UnexpectedNotification
     ***************************************************************************/
 
     private void setMsg ( cstring type,
-        void delegate ( void delegate ( cstring chunk ) sink ) to_string )
+        scope void delegate ( void delegate ( cstring chunk ) sink ) to_string )
     {
         auto msg = this.testname;
         msg ~= " - Unexpected notification \"";

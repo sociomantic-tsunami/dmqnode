@@ -72,7 +72,7 @@ int main ( )
 
 *******************************************************************************/
 
-private const record_data_length = 2500 * uint.sizeof * 2;
+private static immutable record_data_length = 2500 * uint.sizeof * 2;
 
 /*******************************************************************************
 
@@ -192,7 +192,7 @@ void run ( )
         ch2.push(data);
     }
 
-    const data_file_size_pushed = calcDataFileSize(500, 500);
+    static immutable data_file_size_pushed = calcDataFileSize(500, 500);
     test!("==")(getDataFileSize, data_file_size_pushed);
 
     /*
@@ -216,11 +216,11 @@ void run ( )
      * was reduced by 11 MiB. A gap of less than 1 MiB still remains, which
      * needs to be included in further data file size calculations.
      */
-    const bytes_free = calcRecordSize(300, 300);
+    static immutable bytes_free = calcRecordSize(300, 300);
     static assert(data_file_size_pushed > bytes_free);
     static assert(bytes_free / MiB == 11);
-    const gap_size = bytes_free % MiB;
-    const data_file_size_miminized = data_file_size_pushed - 11 * MiB;
+    static immutable gap_size = bytes_free % MiB;
+    static immutable data_file_size_miminized = data_file_size_pushed - 11 * MiB;
 
     ovf.flush();
     test!("==")(getDataFileSize(), data_file_size_miminized);
@@ -237,7 +237,7 @@ void run ( )
         ch2.push(data);
     }
 
-    const data_file_size_pushed2 = calcDataFileSize(300, 300) + gap_size;
+    static immutable data_file_size_pushed2 = calcDataFileSize(300, 300) + gap_size;
     test!("==")(getDataFileSize(), data_file_size_pushed2);
 
     /*
@@ -263,10 +263,10 @@ void run ( )
      */
     ovf.flush();
 
-    const bytes_free2 = calcRecordSize(250, 250) + gap_size;
+    static immutable bytes_free2 = calcRecordSize(250, 250) + gap_size;
     static assert(data_file_size_pushed2 > bytes_free2);
     static assert(bytes_free2 / MiB == 10);
-    const data_file_size_miminized2 = data_file_size_pushed2 - 10 * MiB;
+    static immutable data_file_size_miminized2 = data_file_size_pushed2 - 10 * MiB;
 
     test!("==")(getDataFileSize(), data_file_size_miminized2);
 

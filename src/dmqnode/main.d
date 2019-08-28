@@ -133,7 +133,7 @@ public class DmqNodeServer : DaemonApp
 
     ***************************************************************************/
 
-    private const shutdown_signals = [SIGINT, SIGTERM, SIGQUIT];
+    private static immutable shutdown_signals = [SIGINT, SIGTERM, SIGQUIT];
 
     /***************************************************************************
 
@@ -143,8 +143,8 @@ public class DmqNodeServer : DaemonApp
 
     public this ( )
     {
-        const app_name = "dmqnode";
-        const app_desc = "dmqnode: distributed message queue server node.";
+        static immutable app_name = "dmqnode";
+        static immutable app_desc = "dmqnode: distributed message queue server node.";
 
         DaemonApp.OptionalSettings settings;
         settings.signals = shutdown_signals.dup;

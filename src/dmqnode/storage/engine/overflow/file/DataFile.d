@@ -59,7 +59,7 @@ class DataFile: PosixFile
 
     ***************************************************************************/
 
-    public const head_truncation_chunk_size = 1 << 20;
+    public static immutable head_truncation_chunk_size = 1 << 20;
 
     /***************************************************************************
 
@@ -404,19 +404,19 @@ struct IoVec
 
     size_t advance ( size_t n )
     {
-        verify(n <= this.length);
+        verify(n <= (&this).length);
 
         if (n)
         {
-            if (n == this.length)
+            if (n == (&this).length)
             {
-                this.chunks = null;
+                (&this).chunks = null;
             }
             else
             {
                 size_t bytes = 0;
 
-                foreach (i, ref chunk; this.chunks)
+                foreach (i, ref chunk; (&this).chunks)
                 {
                     bytes += chunk.iov_len;
                     if (bytes > n)
@@ -424,15 +424,15 @@ struct IoVec
                         size_t d = bytes - n;
                         chunk.iov_base += chunk.iov_len - d;
                         chunk.iov_len  = d;
-                        this.chunks = this.chunks[i .. $];
+                        (&this).chunks = (&this).chunks[i .. $];
                         break;
                     }
                 }
             }
-            this.length -= n;
+            (&this).length -= n;
         }
 
-        return this.length;
+        return (&this).length;
     }
 
     /***************************************************************************
@@ -443,7 +443,7 @@ struct IoVec
 
     Const!(void)[] opIndex ( size_t i )
     {
-        with (this.chunks[i]) return iov_base[0 .. iov_len];
+        with ((&this).chunks[i]) return iov_base[0 .. iov_len];
     }
 
     /***************************************************************************
@@ -454,10 +454,10 @@ struct IoVec
 
     Const!(void)[] opIndexAssign ( Const!(void)[] data, size_t i )
     {
-        with (this.chunks[i])
+        with ((&this).chunks[i])
         {
-            this.length -= iov_len;
-            this.length += data.length;
+            (&this).length -= iov_len;
+            (&this).length += data.length;
             iov_len      = data.length;
             iov_base     = data.ptr;
         }
@@ -480,7 +480,7 @@ struct IoVec
                e = "Treppe",
                f = "krumm";
 
-        auto iov = typeof(*this)(iov_buf);
+        auto iov = typeof(*(&this))(iov_buf);
 
         test(iov.chunks.length == iov_buf.length);
         iov[0] = a;

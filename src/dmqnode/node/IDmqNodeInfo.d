@@ -34,5 +34,5 @@ interface IDmqNodeInfo : IChannelsNodeInfo
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref RingNode.Ring channel ) dg );
+    public int opApply ( scope int delegate ( ref RingNode.Ring channel ) dg );
 }

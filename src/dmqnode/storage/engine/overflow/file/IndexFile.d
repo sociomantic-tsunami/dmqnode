@@ -35,7 +35,7 @@ version (D_Version2)
             enum d2_assert = false;
     `);
 else
-    const d2_assert = false;
+    static immutable d2_assert = false;
 
 class IndexFile: PosixFile
 {
@@ -54,7 +54,7 @@ class IndexFile: PosixFile
 
     ***************************************************************************/
 
-    public const signals_dontblock = [SIGABRT, SIGSEGV, SIGBUS, SIGILL];
+    public static immutable signals_dontblock = [SIGABRT, SIGSEGV, SIGBUS, SIGILL];
 
     /***************************************************************************
 
@@ -146,7 +146,7 @@ class IndexFile: PosixFile
 
     ***************************************************************************/
 
-    public void readLines ( void delegate ( cstring channel_name,
+    public void readLines ( scope void delegate ( cstring channel_name,
                                             ChannelMetadata channel,
                                             uint nline ) got_channel )
     {
@@ -233,7 +233,7 @@ class IndexFile: PosixFile
 
     ***************************************************************************/
 
-    public void writeLines ( void delegate ( void delegate ( cstring name, ChannelMetadata channel ) writeln ) iterate )
+    public void writeLines ( scope void delegate ( void delegate ( cstring name, ChannelMetadata channel ) writeln ) iterate )
     {
         this.reset();
 
@@ -392,7 +392,7 @@ unittest
 {
     // Parses line and calls check(), passing the input stream (for feof
     //  checking) and the readLine return and output values.
-    static void checkLine ( cstring line, void delegate ( FILE* stream,
+    static void checkLine ( cstring line, scope void delegate ( FILE* stream,
         int n, cstring channel_name, ChannelMetadata channel ) check )
     {
         FILE* stream = fmemopen_read(line);

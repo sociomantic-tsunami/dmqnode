@@ -68,7 +68,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    const istring DumpFileSuffix = ".rq";
+    static immutable istring DumpFileSuffix = ".rq";
 
 
     /***************************************************************************
