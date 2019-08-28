@@ -21,6 +21,7 @@ import Protocol = dmqproto.node.request.Consume;
 import ocean.core.Array : copy;
 
 import ocean.core.Verify;
+import ocean.meta.types.Qualifiers;
 
 
 /*******************************************************************************

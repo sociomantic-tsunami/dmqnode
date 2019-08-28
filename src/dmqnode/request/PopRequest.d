@@ -18,6 +18,8 @@ import dmqnode.storage.model.StorageEngine;
 
 import Protocol = dmqproto.node.request.Pop;
 
+import ocean.meta.types.Qualifiers;
+
 /*******************************************************************************
 
     Pop request
