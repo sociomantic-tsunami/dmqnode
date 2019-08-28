@@ -87,7 +87,7 @@ public struct ChannelSizeConfig
             "Channel size configuration: Attempted to add an empty prefix"
         );
 
-        foreach (channel; (&this).channels)
+        foreach (channel; this.channels)
         {
             auto n = min(id_prefix.length, channel.id_prefix.length);
             enforce!(IllegalArgumentException)(
@@ -97,7 +97,7 @@ public struct ChannelSizeConfig
             );
         }
 
-        (&this).channels ~= Channel(id_prefix, size_limit);
+        this.channels ~= Channel(id_prefix, size_limit);
     }
 
     /***************************************************************************
@@ -118,7 +118,7 @@ public struct ChannelSizeConfig
     {
         if (id.length)
         {
-            foreach (channel; (&this).channels)
+            foreach (channel; this.channels)
             {
                 if (id.length >= channel.id_prefix.length)
                 {
@@ -130,7 +130,7 @@ public struct ChannelSizeConfig
             }
         }
 
-        return (&this).default_size_limit;
+        return this.default_size_limit;
     }
 }
 

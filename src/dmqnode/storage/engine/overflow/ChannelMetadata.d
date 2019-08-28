@@ -30,7 +30,7 @@ struct ChannelMetadata
 
     ***************************************************************************/
 
-    alias Tracker.FirstOffsetTracker!(typeof(*(&this))) FirstOffsetTracker;
+    alias Tracker.FirstOffsetTracker!(typeof(this)) FirstOffsetTracker;
 
     /***************************************************************************
 
@@ -133,23 +133,23 @@ struct ChannelMetadata
     void updatePush ( RecordHeader header, off_t new_rec_offset, size_t data_length,
                       ref FirstOffsetTracker first_offset_tracker )
     {
-        if (!(&this).records++)
+        if (!this.records++)
         {
             /*
              * channel.records was 0 so we're pushing the first record
              * to a new channel and have to initialise channel.first_offset.
              */
-            (&this).first_offset = new_rec_offset;
-            first_offset_tracker.track(*(&this));
+            this.first_offset = new_rec_offset;
+            first_offset_tracker.track(this);
         }
         /*
          * Update channel.last_offset: The record we just pushed is now the
          * last record in the channel.
          */
-        (&this).last_offset = new_rec_offset;
-        (&this).last_header = header;
+        this.last_offset = new_rec_offset;
+        this.last_header = header;
 
-        (&this).bytes += data_length;
+        this.bytes += data_length;
     }
 
     /***************************************************************************
@@ -173,14 +173,14 @@ struct ChannelMetadata
                      lazy Exception e )
     in
     {
-        assert((&this).records);
+        assert(this.records);
     }
     body
     {
-        enforce(e, (&this).bytes >= data_length, "pop: channel too short");
-        (&this).bytes -= data_length;
+        enforce(e, this.bytes >= data_length, "pop: channel too short");
+        this.bytes -= data_length;
 
-        switch (--(&this).records)
+        switch (--this.records)
         {
             case 0:
                 /*
@@ -189,8 +189,8 @@ struct ChannelMetadata
                  * reset_ the channel to be empty.
                  */
                 enforce(e, !next_offset, "popped record points to a next one but the channel is now empty");
-                enforce(e, !(&this).bytes, "pop: channel size mismatch");
-                (&this).reset_();
+                enforce(e, !this.bytes, "pop: channel size mismatch");
+                this.reset_();
                 break;
             case 1:
                 /*
@@ -199,7 +199,7 @@ struct ChannelMetadata
                  * popped record must refer to channel.last_offset, the most
                  * recently pushed record.
                  */
-                enforce(e, (&this).first_offset + next_offset == (&this).last_offset,
+                enforce(e, this.first_offset + next_offset == this.last_offset,
                         "pop: offset mismatch of last record");
                 goto default;
             default:
@@ -209,8 +209,8 @@ struct ChannelMetadata
                  * Adjust channel.first_offset to the file position of the next
                  * record in the channel, which will be the next record to pop.
                  */
-                (&this).first_offset += next_offset;
-                first_offset_tracker.track(*(&this));
+                this.first_offset += next_offset;
+                first_offset_tracker.track(this);
         }
     }
 
@@ -226,9 +226,9 @@ struct ChannelMetadata
 
     ***************************************************************************/
 
-    public typeof((&this)) next ( )
+    public typeof(&this) next ( )
     {
-        return FirstOffsetTracker.next(*(&this));
+        return FirstOffsetTracker.next(this);
     }
 
     /***************************************************************************
@@ -247,7 +247,7 @@ struct ChannelMetadata
     ***************************************************************************/
 
     static void validate (
-        in typeof(*(&this)) channel,
+        in typeof(this) channel,
         scope void delegate ( bool good, istring msg ) check
     )
     {
@@ -282,7 +282,7 @@ struct ChannelMetadata
 
     ***************************************************************************/
 
-    public static void reset ( ref typeof(*(&this)) channel )
+    public static void reset ( ref typeof(this) channel )
     {
         channel.reset_();
     }
@@ -291,24 +291,24 @@ struct ChannelMetadata
 
     invariant ( )
     {
-        assert((&this).id, "zero channel ID");
+        assert(this.id, "zero channel ID");
 
-        if ((&this).records)
+        if (this.records)
         {
-            assert((&this).last_header.channel == (&this).id, "wrong channel ID of last header");
-            assert((&this).tracker_entry !is null,
+            assert(this.last_header.channel == this.id, "wrong channel ID of last header");
+            assert(this.tracker_entry !is null,
                    "not registered in the first offset tracker with records");
         }
         else
         {
-            assert((&this).last_header == (&this).last_header.init, "last header expected to be blank with no records");
-            assert((&this).tracker_entry is null,
+            assert(this.last_header == this.last_header.init, "last header expected to be blank with no records");
+            assert(this.tracker_entry is null,
                    "registered in the first offset tracker with no records");
         }
 
-        assert(!(&this).last_header.next_offset, "last_header.next expected to be 0");
+        assert(!this.last_header.next_offset, "last_header.next expected to be 0");
 
-        validate(*(&this), (bool good, istring msg) {assert(good, msg);});
+        validate(this, (bool good, istring msg) {assert(good, msg);});
     }
 
     /***************************************************************************
@@ -326,13 +326,13 @@ struct ChannelMetadata
     private void reset_ ( )
     out
     {
-        assert((&this)); // invariant
+        assert(&this); // invariant
     }
     body
     {
-        FirstOffsetTracker.remove(*(&this));
-        auto id = (&this).id;
-        *(&this) = (*(&this)).init;
-        (&this).id = id;
+        FirstOffsetTracker.remove(this);
+        auto id = this.id;
+        this = (this).init;
+        this.id = id;
     }
 }
