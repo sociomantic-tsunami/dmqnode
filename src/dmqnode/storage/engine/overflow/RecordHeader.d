@@ -72,9 +72,9 @@ struct RecordHeader
     size_t length;
 
     static assert(
-        typeof(*this).length.offsetof + typeof(*this).length.sizeof
-        == typeof(*this).sizeof,
-        typeof(*this).stringof ~ ".length should be at the end of the struct"
+        typeof(*(&this)).length.offsetof + typeof(*(&this)).length.sizeof
+        == typeof(*(&this)).sizeof,
+        typeof(*(&this)).stringof ~ ".length should be at the end of the struct"
     );
 
     /***************************************************************************
@@ -96,8 +96,8 @@ struct RecordHeader
          * calculation of the parity of the data of this instance, set it to 0.
          */
 
-        this.parity = 0;
-        return this.parity = this.calcParity();
+        (&this).parity = 0;
+        return (&this).parity = (&this).calcParity();
     }
 
     /***************************************************************************
@@ -118,7 +118,7 @@ struct RecordHeader
     {
         ulong parity = 0;
 
-        foreach (x; this.tupleof)
+        foreach (x; (&this).tupleof)
         {
             parity ^= x;
         }

@@ -295,7 +295,7 @@ abstract class IChannel: IStorageEngine
 
     ***************************************************************************/
 
-    public int opApply ( int delegate ( ref StorageEngine subscriber ) dg )
+    public int opApply ( scope int delegate ( ref StorageEngine subscriber ) dg )
     {
         if (this.initial_storage is null)
         {

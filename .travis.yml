@@ -48,10 +48,6 @@ jobs:
     include:
         # Test matrix
         - <<: *test-matrix
-          env: DMD=1.082.* F=production
-        - <<: *test-matrix
-          env: DMD=1.082.* F=devel
-        - <<: *test-matrix
           env: DMD=2.071.2.s* F=production
         - <<: *test-matrix
           env: DMD=2.071.2.s* F=devel
@@ -72,7 +68,5 @@ jobs:
           script: beaver dlang install && ci/closures.sh
 
         # Package matrix
-        - <<: *package-matrix
-          env: DMD=1.082.* F=production COV=0
         - <<: *package-matrix
           env: DMD=2.071.2.s* F=production COV=0

@@ -1086,7 +1086,7 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    public int iterateChannelNames ( int delegate ( ref cstring name ) dg )
+    public int iterateChannelNames ( scope int delegate ( ref cstring name ) dg )
     {
         foreach (name, metadata; this.channels)
         {

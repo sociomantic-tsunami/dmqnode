@@ -195,15 +195,15 @@ class LoadFiles: TestCase
 
         void connect ( DmqClient dmq )
         {
-            this.task = Task.getThis();
-            assert(this.task);
+            (&this).task = Task.getThis();
+            assert((&this).task);
 
             scope stats = dmq.neo.new Stats;
             do
             {
-                this.task.suspend();
-                if (this.errmsg.length)
-                    throw new Exception(this.errmsg, __FILE__, __LINE__);
+                (&this).task.suspend();
+                if ((&this).errmsg.length)
+                    throw new Exception((&this).errmsg, __FILE__, __LINE__);
             }
             while (stats.num_connected_nodes < stats.num_registered_nodes);
         }
@@ -233,14 +233,14 @@ class LoadFiles: TestCase
                     error_while_connecting.toString(
                         (cstring chunk) {errmsg ~= chunk;}
                     );
-                    this.errmsg = assumeUnique(errmsg);
+                    (&this).errmsg = assumeUnique(errmsg);
                     break;
 
                 default: assert(false);
             }
 
-            if (this.task.suspended)
-                this.task.resume();
+            if ((&this).task.suspended)
+                (&this).task.resume();
         }
     }
 }

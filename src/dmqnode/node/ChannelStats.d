@@ -47,9 +47,9 @@ struct ChannelStats
 
     ***************************************************************************/
 
-    static typeof(*this) set ( RingNode.Ring channel )
+    static typeof(*(&this)) set ( RingNode.Ring channel )
     {
-        auto stats = typeof(*this)(channel.memory_info.used_space,
+        auto stats = typeof(*(&this))(channel.memory_info.used_space,
                                    channel.overflow_info.num_bytes,
                                    cast(uint)channel.memory_info.length,
                                    channel.overflow_info.num_records,

@@ -126,7 +126,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
 
         channel.tracker_entry.node.key = cast(ulong)channel.first_offset;
         channel.tracker_entry.channel = &channel;
-        auto ret_ebnode = eb64_insert(&this.ebroot,
+        auto ret_ebnode = eb64_insert(&(&this).ebroot,
                                       &channel.tracker_entry.node);
 
         if (ret_ebnode is &channel.tracker_entry.node)
@@ -200,7 +200,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
          *       keys because they have been lowered already by the same amount.
          */
         for (
-            auto ebnode = eb64_first(&this.ebroot);
+            auto ebnode = eb64_first(&(&this).ebroot);
             ebnode !is null;
             ebnode = eb64_next(ebnode)
         )
@@ -218,7 +218,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
 
             // eb64_insert returns ebnode iff the ebtree doesn't contain any
             // other node with the same key.
-            if (eb64_insert(&this.ebroot, ebnode) !is ebnode)
+            if (eb64_insert(&(&this).ebroot, ebnode) !is ebnode)
                 assert(false);
         }
     }
@@ -233,7 +233,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
 
     public ChannelMetadata* first ( )
     {
-        return nodeToChannel(eb64_first(&this.ebroot));
+        return nodeToChannel(eb64_first(&(&this).ebroot));
     }
 
     /***************************************************************************
@@ -301,7 +301,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
 
     ***************************************************************************/
 
-    private static const eb_root empty_unique_ebtroot =
+    private static enum eb_root empty_unique_ebtroot =
         function ( )
         {
             eb_root root;
@@ -323,7 +323,7 @@ unittest
 
         invariant ( )
         {
-            test!("<=")(this.first_offset, this.last_offset);
+            test!("<=")((&this).first_offset, (&this).last_offset);
         }
     }
 

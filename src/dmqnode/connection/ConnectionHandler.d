@@ -312,7 +312,7 @@ public class ConnectionHandler
 
     ***************************************************************************/
 
-    public this ( FinalizeDg finalize_dg, Swarm.ConnectionSetupParams setup )
+    public this ( scope FinalizeDg finalize_dg, Swarm.ConnectionSetupParams setup )
     {
         super(finalize_dg, setup);
     }

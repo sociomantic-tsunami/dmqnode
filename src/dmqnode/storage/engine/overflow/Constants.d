@@ -22,7 +22,7 @@ struct Constants
 
     ***************************************************************************/
 
-    const istring
+    enum istring
         datafile_suffix  = ".dat",
         datafile_name    = "overflow" ~ datafile_suffix,
         indexfile_suffix = ".csv",
