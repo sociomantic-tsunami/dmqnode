@@ -17,6 +17,8 @@ import dmqnode.request.model.IDmqRequestResources;
 
 import Protocol = dmqproto.node.request.RemoveChannel;
 
+import ocean.meta.types.Qualifiers;
+
 /*******************************************************************************
 
     RemoveChannel request

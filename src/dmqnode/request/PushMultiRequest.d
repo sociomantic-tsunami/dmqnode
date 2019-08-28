@@ -18,6 +18,7 @@ import dmqnode.request.model.IDmqRequestResources;
 import Protocol = dmqproto.node.request.PushMulti;
 
 import ocean.core.Verify;
+import ocean.meta.types.Qualifiers;
 
 /*******************************************************************************
 

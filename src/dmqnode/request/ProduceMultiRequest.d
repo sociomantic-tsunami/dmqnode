@@ -17,6 +17,8 @@ import dmqnode.request.model.IDmqRequestResources;
 
 import Protocol = dmqproto.node.request.ProduceMulti;
 
+import ocean.meta.types.Qualifiers;
+
 import swarm.common.request.helper.LoopCeder;
 
 /*******************************************************************************
