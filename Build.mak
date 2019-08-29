@@ -1,5 +1,3 @@
-DC = dmd-transitional
-
 ifeq ($F, production)
 	override DFLAGS += -release
 endif
