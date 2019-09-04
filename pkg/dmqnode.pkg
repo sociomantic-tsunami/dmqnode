@@ -6,6 +6,7 @@ OPTS.update(
     description = FUN.desc(epilog='''\
 The DMQ node is a server implementing one node for a network message queue.'''),
     provides = 'dmqnode',
+    after_install = 'pkg/after_dmqnode_install.sh',
     depends = FUN.autodeps(bins, path=VAR.bindir),
     deb_recommends = 'dmqnode-common',
 )
