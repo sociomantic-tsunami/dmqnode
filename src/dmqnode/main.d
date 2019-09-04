@@ -28,7 +28,6 @@ import dmqproto.client.legacy.DmqConst;
 
 import swarm.util.node.log.Stats;
 
-import ocean.core.ExceptionDefinitions : OutOfMemoryException;
 import ocean.core.MessageFiber;
 import ocean.io.select.client.model.ISelectClient;
 import ocean.io.select.EpollSelectDispatcher;
@@ -241,10 +240,6 @@ public class DmqNodeServer : DaemonApp
         {
             // Don't log these exception types, which only occur on the normal
             // disconnection of a client.
-        }
-        else if ( cast(OutOfMemoryException)exception )
-        {
-            log.error("OutOfMemoryException caught in eventLoop");
         }
         else
         {
