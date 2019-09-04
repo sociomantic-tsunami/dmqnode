@@ -31,7 +31,8 @@ allunittest: override LDFLAGS += -lpcre
 #$O/%unittests: override LDFLAGS += 
 
 # Package dependencies
-$O/pkg-dmqnode.stamp: $B/dmqnode README.rst
+$O/pkg-dmqnode.stamp: $B/dmqnode README.rst \
+	$(PKG)/after_dmqnode_install.sh
 
 $O/pkg-dmqnode-common.stamp: \
        $(PKG)/defaults.py README.rst
