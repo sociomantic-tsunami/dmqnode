@@ -28,8 +28,24 @@ import dmqnode.util.Downcast;
 
 class PopImpl_v1 : PopProtocol_v1
 {
+    import dmqproto.common.RequestCodes : RequestCode;
     import ocean.core.TypeConvert : castFrom, downcast;
-    import ocean.meta.types.Qualifiers : cstring, mstring;
+    import ocean.meta.types.Qualifiers : cstring, istring, mstring;
+    import swarm.neo.request.Command : Command;
+
+    /// Request code and version (required by ConnectionHandler)
+    static immutable Command command = Command(RequestCode.Pop, 1);
+
+    /// Request name for stats tracking (required by ConnectionHandler)
+    static immutable istring name = "pop";
+
+    /// Flag indicating whether timing stats should be generated for
+    /// requests of this type
+    static immutable bool timing = true;
+
+    /// Flag indicating whether this request is scheduled for removal
+    /// (if `true`, clients will be warned)
+    static immutable bool scheduled_for_removal = false;
 
     /***************************************************************************
 

@@ -26,8 +26,24 @@ import dmqnode.util.Downcast;
 
 class PushImpl_v3 : PushProtocol_v3
 {
+    import dmqproto.common.RequestCodes : RequestCode;
     import ocean.core.TypeConvert : castFrom;
-    import ocean.meta.types.Qualifiers : Const, cstring;
+    import ocean.meta.types.Qualifiers : Const, cstring, istring;
+    import swarm.neo.request.Command : Command;
+
+    /// Request code and version (required by ConnectionHandler)
+    static immutable Command command = Command(RequestCode.Push, 3);
+
+    /// Request name for stats tracking (required by ConnectionHandler)
+    static immutable istring name = "push";
+
+    /// Flag indicating whether timing stats should be generated for
+    /// requests of this type
+    static immutable bool timing = true;
+
+    /// Flag indicating whether this request is scheduled for removal
+    /// (if `true`, clients will be warned)
+    static immutable bool scheduled_for_removal = false;
 
     /***************************************************************************
 

@@ -89,7 +89,6 @@ public class DmqNode
         options.epoll = epoll;
         options.requests = request_handlers;
         options.shared_resources = this.shared_resources;
-        options.no_delay = no_delay;
         options.unix_socket_path = idup(server_config.unix_socket_path());
         options.credentials_filename = "etc/credentials";
 
