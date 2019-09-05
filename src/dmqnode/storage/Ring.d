@@ -318,7 +318,7 @@ public class RingNode : StorageChannels
             scope allocValue = delegate void[] ( size_t n )
             {
                 if (value.length < n)
-                    enableStomping(value);
+                    assumeSafeAppend(value);
 
                 value.length = n;
                 return value;

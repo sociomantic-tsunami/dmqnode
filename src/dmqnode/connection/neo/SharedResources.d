@@ -140,7 +140,7 @@ public final class SharedResources
                 auto buffer =
                     this.outer.value_buffers.get(cast(ubyte[])new void[len]);
                 buffer.length = 0;
-                enableStomping(buffer);
+                assumeSafeAppend(buffer);
 
                 return buffer;
             }
