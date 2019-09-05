@@ -15,10 +15,7 @@ module dmqnode.connection.ConnectionHandler;
 
 import dmqnode.connection.SharedResources;
 import dmqnode.request.ConsumeRequest;
-import dmqnode.request.GetChannelSizeRequest;
-import dmqnode.request.GetChannelsRequest;
 import dmqnode.request.GetNumConnectionsRequest;
-import dmqnode.request.GetSizeRequest;
 import dmqnode.request.model.IDmqRequestResources;
 import dmqnode.request.PopRequest;
 import dmqnode.request.ProduceMultiRequest;
@@ -351,42 +348,6 @@ public class ConnectionHandler
     override protected void handlePop ( )
     {
         this.handleCommand!(PopRequest, RequestStatsTracking.TimeAndCount);
-    }
-
-
-    /***************************************************************************
-
-        Command code 'GetChannels' handler.
-
-    ***************************************************************************/
-
-    override protected void handleGetChannels ( )
-    {
-        this.handleCommand!(GetChannelsRequest);
-    }
-
-
-    /***************************************************************************
-
-        Command code 'GetChannelSize' handler.
-
-    ***************************************************************************/
-
-    override protected void handleGetChannelSize ( )
-    {
-        this.handleCommand!(GetChannelSizeRequest);
-    }
-
-
-    /***************************************************************************
-
-        Command code 'GetSize' handler.
-
-    ***************************************************************************/
-
-    override protected void handleGetSize ( )
-    {
-        this.handleCommand!(GetSizeRequest);
     }
 
 
