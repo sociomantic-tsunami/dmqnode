@@ -17,7 +17,8 @@ module integrationtest.loadfiles.cases.checker.CheckedRequests;
 import dmqproto.client.DmqClient;
 import ocean.task.Task;
 import ocean.core.Traits;
-import ocean.transition;
+import ocean.core.TypeConvert : assumeUnique;
+import ocean.meta.types.Qualifiers : Const, cstring, Immut, istring;
 
 /*******************************************************************************
 

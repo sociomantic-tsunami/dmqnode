@@ -13,7 +13,6 @@
 
 module dmqnode.connection.neo.SharedResources;
 
-import ocean.transition;
 
 /*******************************************************************************
 

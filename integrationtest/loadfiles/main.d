@@ -14,8 +14,8 @@ module integrationtest.loadfiles.main;
 
 import integrationtest.loadfiles.cases.LoadFiles;
 import turtle.runner.Runner;
+import ocean.meta.types.Qualifiers : istring;
 import ocean.util.log.Logger;
-import ocean.transition;
 
 /*******************************************************************************
 

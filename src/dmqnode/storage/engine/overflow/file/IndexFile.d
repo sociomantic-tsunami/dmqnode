@@ -24,8 +24,7 @@ module dmqnode.storage.engine.overflow.file.IndexFile;
 
 import dmqnode.storage.engine.overflow.ChannelMetadata;
 import dmqnode.storage.engine.overflow.file.PosixFile;
-
-import ocean.transition;
+import ocean.meta.types.Qualifiers : cstring, istring;
 
 version (D_Version2)
     mixin(`
@@ -376,6 +375,7 @@ version (UnitTest)
     import core.stdc.stdio;
     import core.stdc.stdlib;
     import ocean.core.Test;
+    import ocean.meta.types.Qualifiers : Const;
     import ocean.sys.ErrnoException;
     extern (C) private FILE* fmemopen(void* buf, size_t size, Const!(char)* mode);
 

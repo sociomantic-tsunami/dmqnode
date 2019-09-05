@@ -22,8 +22,6 @@ import dmqnode.storage.model.StorageEngine;
 import ocean.core.TypeConvert : castFrom;
 import dmqnode.util.Downcast;
 
-import ocean.transition;
-
 
 /*******************************************************************************
 
@@ -33,6 +31,8 @@ import ocean.transition;
 
 class ConsumeImpl_v4 : ConsumeProtocol_v4, StorageEngine.IConsumer
 {
+    import ocean.meta.types.Qualifiers : cstring, mstring;
+
     /***************************************************************************
 
         Storage engine being consumed from.

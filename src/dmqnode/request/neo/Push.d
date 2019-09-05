@@ -17,7 +17,6 @@ import dmqproto.node.neo.request.Push;
 import dmqproto.node.neo.request.core.IRequestResources;
 
 import dmqnode.util.Downcast;
-import ocean.transition;
 
 /*******************************************************************************
 
@@ -28,6 +27,7 @@ import ocean.transition;
 class PushImpl_v3 : PushProtocol_v3
 {
     import ocean.core.TypeConvert : castFrom;
+    import ocean.meta.types.Qualifiers : Const, cstring;
 
     /***************************************************************************
 

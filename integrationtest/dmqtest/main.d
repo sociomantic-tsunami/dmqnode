@@ -16,9 +16,9 @@ module integrationtest.dmqtest.main;
 
 
 import dmqtest.TestRunner;
+import ocean.meta.types.Qualifiers : istring;
 import turtle.runner.Runner;
 
-import ocean.transition;
 
 /*******************************************************************************
 

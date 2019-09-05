@@ -20,7 +20,7 @@ class HeadTruncationTestFile: DataFile
     import dmqnode.storage.engine.overflow.file.FileException;
     import core.sys.posix.stdlib: mkstemp;
     import core.stdc.stdio: SEEK_END;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers : cstring;
 
     /***************************************************************************
 

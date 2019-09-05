@@ -27,13 +27,14 @@ import ocean.io.FilePath;
 import ocean.io.Path : normalize, PathParser;
 import ocean.sys.Environment;
 import ocean.core.Verify;
-import ocean.transition;
 
 import swarm.node.storage.listeners.Listeners;
 import swarm.node.storage.model.IStorageEngine;
 
 public abstract class StorageEngine : IStorageEngine
 {
+    import ocean.meta.types.Qualifiers : cstring;
+
     /***************************************************************************
 
         Set of consumers waiting for data on this storage channel. When data
