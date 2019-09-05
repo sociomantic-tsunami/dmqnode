@@ -469,7 +469,7 @@ class DiskOverflow: DiskOverflowInfo
         }
         catch (FileException e)
         {
-            log.error("Error testing file truncation: {}", getMsg(e));
+            log.error("Error testing file truncation: {}", e.message);
         }
 
         this.e     = new DiskOverflowException;

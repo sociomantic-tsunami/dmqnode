@@ -30,7 +30,6 @@ import core.sys.posix.stdlib: srand48, mrand48;
 import core.sys.posix.sys.stat: stat_t, fstat;
 import core.stdc.stdio: SEEK_CUR;
 import core.stdc.stdlib: EXIT_SUCCESS, EXIT_FAILURE;
-import ocean.transition: getMsg;
 import ocean.util.log.Logger;
 
 /*******************************************************************************
@@ -57,7 +56,7 @@ int main ( )
     catch (Exception e)
     {
         Log.lookup("test-ovfminimize").error(
-            "{} @{}:{}", getMsg(e), e.file, e.line
+            "{} @{}:{}", e.message, e.file, e.line
         );
         return EXIT_FAILURE;
     }
