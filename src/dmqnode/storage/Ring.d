@@ -36,7 +36,6 @@ import ocean.util.container.queue.FlexibleRingQueue;
 import ocean.util.container.queue.model.IQueueInfo;
 import ocean.util.log.Logger;
 import core.stdc.ctype;
-import ocean.transition;
 
 
 /*******************************************************************************
@@ -62,6 +61,8 @@ static this ( )
 
 public class RingNode : StorageChannels
 {
+    import ocean.meta.types.Qualifiers : Const, cstring, Immut, istring;
+
     /***************************************************************************
 
         Dump file name suffix

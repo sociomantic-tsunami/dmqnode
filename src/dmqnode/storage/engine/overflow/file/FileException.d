@@ -17,8 +17,8 @@ import ocean.sys.ErrnoException;
 
 class FileException: ErrnoException
 {
+    import ocean.meta.types.Qualifiers : Immut, istring;
     import ocean.stdc.string: memmove;
-    import ocean.transition;
 
     /***************************************************************************
 

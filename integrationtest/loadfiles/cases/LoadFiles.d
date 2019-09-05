@@ -47,8 +47,9 @@ class LoadFiles: TestCase
     import ocean.task.Scheduler;
     import ocean.task.Task;
     import Test = ocean.core.Test;
+    import ocean.core.TypeConvert : assumeUnique;
+    import ocean.meta.types.Qualifiers : cstring, istring, mstring;
     import ocean.util.log.Logger;
-    import ocean.transition;
 
     /***************************************************************************
 

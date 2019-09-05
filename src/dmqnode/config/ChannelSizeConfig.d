@@ -19,7 +19,7 @@ public struct ChannelSizeConfig
     import ocean.core.Enforce;
     import ocean.core.ExceptionDefinitions: IllegalArgumentException;
     import ocean.math.Math: min;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers : cstring, istring;
 
     /***************************************************************************
 

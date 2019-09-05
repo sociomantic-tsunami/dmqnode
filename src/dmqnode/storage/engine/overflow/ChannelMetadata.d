@@ -14,7 +14,6 @@ module dmqnode.storage.engine.overflow.ChannelMetadata;
 
 import dmqnode.storage.engine.overflow.RecordHeader;
 
-import ocean.transition;
 
 struct ChannelMetadata
 {
@@ -22,6 +21,7 @@ struct ChannelMetadata
     import Tracker = dmqnode.storage.engine.overflow.FirstOffsetTracker;
 
     import ocean.core.Enforce: enforce;
+    import ocean.meta.types.Qualifiers : istring;
     import ocean.stdc.posix.sys.types: off_t;
 
     /***************************************************************************

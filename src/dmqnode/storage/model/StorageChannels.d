@@ -17,10 +17,9 @@
 
 module dmqnode.storage.model.StorageChannels;
 
-
+import ocean.meta.types.Qualifiers : cstring, istring;
 import swarm.node.storage.model.IStorageEngine;
 
-import ocean.transition;
 
 /*******************************************************************************
 

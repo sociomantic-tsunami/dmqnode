@@ -19,7 +19,6 @@ import dmqproto.node.neo.request.Pop;
 import dmqproto.node.neo.request.core.IRequestResources;
 
 import dmqnode.util.Downcast;
-import ocean.transition;
 
 /*******************************************************************************
 
@@ -30,6 +29,7 @@ import ocean.transition;
 class PopImpl_v1 : PopProtocol_v1
 {
     import ocean.core.TypeConvert : castFrom, downcast;
+    import ocean.meta.types.Qualifiers : cstring, mstring;
 
     /***************************************************************************
 

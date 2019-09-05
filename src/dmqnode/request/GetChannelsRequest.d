@@ -17,8 +17,6 @@ import dmqnode.request.model.IDmqRequestResources;
 
 import Protocol = dmqproto.node.request.GetChannels;
 
-import ocean.transition;
-
 
 /*******************************************************************************
 

@@ -17,10 +17,10 @@ import dmqnode.storage.engine.DiskOverflow;
 import dmqnode.storage.engine.overflow.ChannelMetadata;
 import dmqnode.storage.engine.overflow.RecordHeader;
 
-import ocean.transition;
-
 package class OverflowChannel: DiskOverflowInfo
 {
+    import ocean.meta.types.Qualifiers : istring;
+
     /***************************************************************************
 
         The channel name.

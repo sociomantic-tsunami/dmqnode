@@ -26,8 +26,9 @@ class PosixFile
     import unistd = core.sys.posix.unistd: close, unlink;
     import core.sys.posix.unistd: lseek, ftruncate, fdatasync;
     import core.stdc.stdio: SEEK_SET;
+    import ocean.core.TypeConvert : assumeUnique;
     import ocean.core.Verify;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers : cstring, Immut, istring, mstring;
     import ocean.util.log.Logger;
 
     /***************************************************************************

@@ -14,7 +14,7 @@ module dmqnode.storage.engine.overflow.Constants;
 
 struct Constants
 {
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers : Immut, istring;
 
     /***************************************************************************
 

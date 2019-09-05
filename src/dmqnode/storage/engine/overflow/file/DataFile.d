@@ -43,7 +43,7 @@ class DataFile: PosixFile
     import unistd = core.sys.posix.unistd: read, write, pread, pwrite;
     import uio = core.sys.posix.sys.uio: iovec, writev;
     import ocean.core.Verify;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers : cstring, istring;
 
     /***************************************************************************
 
@@ -362,7 +362,7 @@ struct IoVec
 {
     import swarm.neo.protocol.socket.uio_const: iovec_const;
     import ocean.core.Verify;
-    import ocean.transition;
+    import ocean.meta.types.Qualifiers : Const;
 
     /***************************************************************************
 

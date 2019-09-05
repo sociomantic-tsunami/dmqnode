@@ -15,7 +15,6 @@ module dmqnode.config.ServerConfig;
 
 import ConfigReader = ocean.util.config.ConfigFiller;
 
-import ocean.transition;
 
 /*******************************************************************************
 
@@ -25,6 +24,8 @@ import ocean.transition;
 
 public class ServerConfig
 {
+    import ocean.meta.types.Qualifiers : istring;
+
     ConfigReader.Required!(char[]) address;
 
     ConfigReader.Required!(ushort) port;
