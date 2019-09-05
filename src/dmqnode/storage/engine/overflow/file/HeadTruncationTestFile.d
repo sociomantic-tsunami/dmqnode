@@ -66,7 +66,7 @@ class HeadTruncationTestFile: DataFile
             this.head_truncation_supported = (filesize == 100);
         }
         catch (FileException e)
-            this.log.error(getMsg(e));
+            this.log.error(e.message);
 
         this.remove();
     }

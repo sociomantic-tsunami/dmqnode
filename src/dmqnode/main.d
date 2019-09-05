@@ -244,7 +244,7 @@ public class DmqNodeServer : DaemonApp
         else
         {
             log.error("Exception caught in eventLoop: '{}' @ {}:{}",
-                    getMsg(exception), exception.file, exception.line);
+                      exception.message, exception.file, exception.line);
         }
     }
 
