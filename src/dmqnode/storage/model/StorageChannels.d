@@ -568,7 +568,7 @@ version (UnitTest)
 
 unittest
 {
-    static class Storage: IChannel.StorageEngine
+    static class Storage: StorageEngine
     {
         bool flushed, cleared, closed, recycled;
         uint records, bytes;
