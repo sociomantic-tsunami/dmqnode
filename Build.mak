@@ -1,3 +1,9 @@
+# check whether to build with position-independent code
+# (may be required to build on newer distro releases)
+ifeq ($(USE_PIC), 1)
+	override DFLAGS += -fPIC
+endif
+
 ifeq ($F, production)
 	override DFLAGS += -release
 endif
