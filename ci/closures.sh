@@ -1,12 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 set -xe
 
 # Enables printing of all potential GC allocation sources to stdout
 export DFLAGS=-vgc
 
 # Prepare sources
-beaver dlang make d2conv
+beaver dlang make
 
-# Ensure that there are no lines about closure allocations in the output
-# Filters away errors from submodules to focus on swarm own code only
-! beaver dlang make fasttest 2>&1 | grep "\./src/.*\<closure\>"
+# Run tests and write compiler output to temporary file
+compiler_output=`mktemp`
+beaver dlang make fasttest 2>&1 > $compiler_output
+
+# Ensure there are no lines about closure allocations in the output.
+# Note explicit check for `grep` exit status 1, i.e. no lines found.
+! grep -e "closure" $compiler_output
