@@ -168,13 +168,12 @@ void run ( )
      */
     void pop ( DiskOverflow.Channel channel )
     {
-        bool popped = channel.pop(
-            delegate void[] (size_t n)
-            {
-                test!("==")(n, pop_result.length);
-                return pop_result;
-            }
-        );
+        scope dg = delegate void[] (size_t n)
+        {
+            test!("==")(n, pop_result.length);
+            return pop_result;
+        };
+        bool popped = channel.pop(dg);
         test(popped);
         test!("==")(pop_result, data);
     }
