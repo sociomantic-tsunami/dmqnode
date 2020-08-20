@@ -557,7 +557,7 @@ public abstract class StorageChannels :
     abstract public void writeDiskOverflowIndex ( );
 }
 
-version (UnitTest)
+version (unittest)
 {
     import dmqnode.storage.model.StorageEngine;
     import ocean.core.Test;

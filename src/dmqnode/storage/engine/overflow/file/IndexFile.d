@@ -370,7 +370,7 @@ class IndexFile: PosixFile
     }
 }
 
-version (UnitTest)
+version (unittest)
 {
     import core.stdc.stdio;
     import core.stdc.stdlib;

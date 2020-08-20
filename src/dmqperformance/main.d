@@ -47,7 +47,7 @@ import ocean.util.log.StaticTrace;
 
 *******************************************************************************/
 
-version (UnitTest) {} else
+version (unittest) {} else
 int main ( istring[] cl_args )
 {
     auto app = new DmqPerformance;
