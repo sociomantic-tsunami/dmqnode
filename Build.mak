@@ -34,7 +34,7 @@ allunittest: override DFLAGS += -debug=OvfMinimizeTest -debug=Full
 allunittest: override LDFLAGS += -lpcre
 
 # Additional flags needed when unittesting
-#$O/%unittests: override LDFLAGS += 
+#$O/%unittests: override LDFLAGS +=
 
 # Package dependencies
 $O/pkg-dmqnode.stamp: $B/dmqnode README.rst \
