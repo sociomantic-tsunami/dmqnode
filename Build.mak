@@ -30,8 +30,8 @@ $O/test-ovfminimize: override DFLAGS += -debug=OvfMinimizeTest -debug=Full
 $O/test-loadfiles: dmqnode
 $O/test-loadfiles: override LDFLAGS += -lpcre
 
-allunittest: override DFLAGS += -debug=OvfMinimizeTest -debug=Full
-allunittest: override LDFLAGS += -lpcre
+$O/%unittests: override DFLAGS += -debug=OvfMinimizeTest -debug=Full
+$O/%unittests: override LDFLAGS += -lpcre
 
 # Additional flags needed when unittesting
 #$O/%unittests: override LDFLAGS +=
