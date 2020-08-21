@@ -17,7 +17,12 @@ class PosixFile
 {
     import dmqnode.storage.engine.overflow.file.FileException;
 
+    import ocean.core.TypeConvert : assumeUnique;
+    import ocean.core.Verify;
     import ocean.io.FilePath;
+    import ocean.meta.types.Qualifiers : cstring, Immut, istring, mstring;
+    import ocean.util.log.Logger;
+
     import core.stdc.errno: EINTR, errno;
     import fcntl = core.sys.posix.fcntl: open;
     import core.sys.posix.fcntl: O_RDWR, O_APPEND, O_CREAT, S_IRUSR, S_IWUSR,
@@ -26,10 +31,6 @@ class PosixFile
     import unistd = core.sys.posix.unistd: close, unlink;
     import core.sys.posix.unistd: lseek, ftruncate, fdatasync;
     import core.stdc.stdio: SEEK_SET;
-    import ocean.core.TypeConvert : assumeUnique;
-    import ocean.core.Verify;
-    import ocean.meta.types.Qualifiers : cstring, Immut, istring, mstring;
-    import ocean.util.log.Logger;
 
     /***************************************************************************
 
