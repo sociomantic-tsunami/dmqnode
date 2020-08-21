@@ -362,7 +362,6 @@ struct IoVec
 {
     import swarm.neo.protocol.socket.uio_const: iovec_const;
     import ocean.core.Verify;
-    import ocean.meta.types.Qualifiers : Const;
 
     /***************************************************************************
 
@@ -441,7 +440,7 @@ struct IoVec
 
     ***************************************************************************/
 
-    Const!(void)[] opIndex ( size_t i )
+    const(void)[] opIndex ( size_t i )
     {
         with (this.chunks[i]) return iov_base[0 .. iov_len];
     }
@@ -452,7 +451,7 @@ struct IoVec
 
     ***************************************************************************/
 
-    Const!(void)[] opIndexAssign ( Const!(void)[] data, size_t i )
+    const(void)[] opIndexAssign ( const(void)[] data, size_t i )
     {
         with (this.chunks[i])
         {
@@ -473,8 +472,8 @@ struct IoVec
     {
         iovec_const[6] iov_buf;
 
-        Const!(void)[] a = "Die",
-                       b = "Katze",
+        const(void)[] a = "Die",
+                      b = "Katze",
                c = "tritt",
                d = "die",
                e = "Treppe",

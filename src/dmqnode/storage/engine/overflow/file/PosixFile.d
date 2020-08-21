@@ -20,7 +20,7 @@ class PosixFile
     import ocean.core.TypeConvert : assumeUnique;
     import ocean.core.Verify;
     import ocean.io.FilePath;
-    import ocean.meta.types.Qualifiers : cstring, Immut, istring, mstring;
+    import ocean.meta.types.Qualifiers : cstring, istring, mstring;
     import ocean.util.log.Logger;
 
     import core.stdc.errno: EINTR, errno;
@@ -38,7 +38,7 @@ class PosixFile
 
     ***************************************************************************/
 
-    public Immut!(char[]) name;
+    public immutable(char[]) name;
 
     /***************************************************************************
 
@@ -46,7 +46,7 @@ class PosixFile
 
     ***************************************************************************/
 
-    protected Immut!(char*) namec;
+    protected immutable(char*) namec;
 
     /***************************************************************************
 

@@ -14,7 +14,7 @@ module dmqnode.storage.engine.overflow.Constants;
 
 struct Constants
 {
-    import ocean.meta.types.Qualifiers : Immut, istring;
+    import ocean.meta.types.Qualifiers : istring;
 
     /***************************************************************************
 
@@ -35,5 +35,5 @@ struct Constants
 
     ***************************************************************************/
 
-    static Immut!(char[8]) datafile_id = "QDSKOF01";
+    static immutable(char[8]) datafile_id = "QDSKOF01";
 }

@@ -17,7 +17,7 @@ module dmqnode.storage.engine.overflow.RecordHeader;
 
 struct RecordHeader
 {
-    import ocean.stdc.posix.sys.types: off_t;
+    import core.sys.posix.sys.types: off_t;
 
     /***************************************************************************
 

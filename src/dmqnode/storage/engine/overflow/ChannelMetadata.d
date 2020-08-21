@@ -22,7 +22,7 @@ struct ChannelMetadata
 
     import ocean.core.Enforce: enforce;
     import ocean.meta.types.Qualifiers : istring;
-    import ocean.stdc.posix.sys.types: off_t;
+    import core.sys.posix.sys.types: off_t;
 
     /***************************************************************************
 

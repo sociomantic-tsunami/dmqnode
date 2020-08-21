@@ -17,8 +17,7 @@ import ocean.sys.ErrnoException;
 
 class FileException: ErrnoException
 {
-    import ocean.meta.types.Qualifiers : Immut, istring;
-    import ocean.stdc.string: memmove;
+    import ocean.meta.types.Qualifiers : istring;
 
     /***************************************************************************
 
@@ -27,7 +26,7 @@ class FileException: ErrnoException
 
     ***************************************************************************/
 
-    public Immut!(char[]) filename;
+    public immutable(char[]) filename;
 
     /***************************************************************************
 

@@ -61,7 +61,7 @@ static this ( )
 
 public class RingNode : StorageChannels
 {
-    import ocean.meta.types.Qualifiers : Const, cstring, Immut, istring;
+    import ocean.meta.types.Qualifiers : cstring, istring;
 
     /***************************************************************************
 
@@ -292,7 +292,7 @@ public class RingNode : StorageChannels
 
             if (void[] dst = this.queue.push(value.length))
             {
-                Const!(void)[] value_raw = value;
+                const(void)[] value_raw = value;
                 dst[] = value_raw;
             }
             else
@@ -576,7 +576,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    private Immut!(char[]) data_dir;
+    private immutable(char[]) data_dir;
 
 
     /***************************************************************************

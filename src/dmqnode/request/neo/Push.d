@@ -28,7 +28,7 @@ class PushImpl_v3 : PushProtocol_v3
 {
     import dmqproto.common.RequestCodes : RequestCode;
     import ocean.core.TypeConvert : castFrom;
-    import ocean.meta.types.Qualifiers : Const, cstring, istring;
+    import ocean.meta.types.Qualifiers : cstring, istring;
     import swarm.neo.request.Command : Command;
 
     /// Request code and version (required by ConnectionHandler)
@@ -95,7 +95,7 @@ class PushImpl_v3 : PushProtocol_v3
             .storage_channels.getCreate(channel_name) )
         {
             foreach (subscriber; storage_channel)
-                subscriber.push(castFrom!(Const!(void)[]).to!(cstring)(value));
+                subscriber.push(castFrom!(const(void)[]).to!(cstring)(value));
             return true;
         }
 
