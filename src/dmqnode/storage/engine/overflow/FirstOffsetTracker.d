@@ -55,9 +55,9 @@ struct FirstOffsetTrackerEntry
 struct FirstOffsetTracker ( ChannelMetadata )
 {
     import ocean.core.Enforce: enforce;
-    import ocean.stdc.posix.sys.types: off_t;
     import ocean.util.container.ebtree.c.eb64tree;
     import ocean.util.container.ebtree.c.ebtree;
+    import core.sys.posix.sys.types: off_t;
 
     /***************************************************************************
 

@@ -16,9 +16,8 @@ module integrationtest.loadfiles.cases.checker.CheckedRequests;
 
 import dmqproto.client.DmqClient;
 import ocean.task.Task;
-import ocean.core.Traits;
 import ocean.core.TypeConvert : assumeUnique;
-import ocean.meta.types.Qualifiers : Const, cstring, Immut, istring;
+import ocean.meta.types.Qualifiers : cstring, istring;
 
 /*******************************************************************************
 
@@ -70,7 +69,7 @@ abstract class RecordChecker
 
     ***************************************************************************/
 
-    private Immut!(char[])[] received_records;
+    private immutable(char[])[] received_records;
 
     /***************************************************************************
 
@@ -226,11 +225,10 @@ class UnexpectedNotification
     {
         foreach (i, Field; typeof(U.tupleof))
         {
-            if (notification.active ==
-                mixin("notification.active." ~ FieldName!(i, U)))
+            enum FName = __traits(identifier, U.tupleof[i]);
+            if (notification.active == mixin("notification.active." ~ FName))
             {
-                this.setMsg(FieldName!(i, U),
-                    &mixin("notification." ~ FieldName!(i, U)).toString);
+                this.setMsg(FName, &mixin("notification." ~ FName).toString);
             }
         }
     }
@@ -351,7 +349,7 @@ class Consume: RecordChecker
     ***************************************************************************/
 
     private void notifier ( DmqClient.Neo.Consume.Notification info,
-                            Const!(DmqClient.Neo.Consume.Args) args )
+                            const(DmqClient.Neo.Consume.Args) args )
     {
         with (info) switch (active)
         {
@@ -421,7 +419,7 @@ class Pop: RecordChecker
     ***************************************************************************/
 
     private void notifier ( DmqClient.Neo.Pop.Notification info,
-                            Const!(DmqClient.Neo.Pop.Args) args )
+                            const(DmqClient.Neo.Pop.Args) args )
     {
         with (info) switch (active)
         {
@@ -501,7 +499,7 @@ class PopEmpty
     ***************************************************************************/
 
     private void notifier ( DmqClient.Neo.Pop.Notification info,
-                            Const!(DmqClient.Neo.Pop.Args) args )
+                            const(DmqClient.Neo.Pop.Args) args )
     {
         with (info) switch (active)
         {

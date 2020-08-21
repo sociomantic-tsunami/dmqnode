@@ -375,9 +375,8 @@ version (unittest)
     import core.stdc.stdio;
     import core.stdc.stdlib;
     import ocean.core.Test;
-    import ocean.meta.types.Qualifiers : Const;
     import ocean.sys.ErrnoException;
-    extern (C) private FILE* fmemopen(void* buf, size_t size, Const!(char)* mode);
+    extern (C) private FILE* fmemopen(void* buf, size_t size, const(char)* mode);
 
     /// Creates a `FILE` stream reading from `buf`.
     private FILE* fmemopen_read ( in void[] buf )
