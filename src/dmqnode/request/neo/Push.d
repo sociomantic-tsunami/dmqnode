@@ -28,14 +28,14 @@ class PushImpl_v3 : PushProtocol_v3
 {
     import dmqproto.common.RequestCodes : RequestCode;
     import ocean.core.TypeConvert : castFrom;
-    import ocean.meta.types.Qualifiers : cstring, istring;
+    import ocean.meta.types.Qualifiers : cstring;
     import swarm.neo.request.Command : Command;
 
     /// Request code and version (required by ConnectionHandler)
     static immutable Command command = Command(RequestCode.Push, 3);
 
     /// Request name for stats tracking (required by ConnectionHandler)
-    static immutable istring name = "push";
+    static immutable string name = "push";
 
     /// Flag indicating whether timing stats should be generated for
     /// requests of this type

@@ -32,14 +32,14 @@ import dmqnode.util.Downcast;
 class ConsumeImpl_v4 : ConsumeProtocol_v4, StorageEngine.IConsumer
 {
     import dmqproto.common.RequestCodes : RequestCode;
-    import ocean.meta.types.Qualifiers : cstring, istring, mstring;
+    import ocean.meta.types.Qualifiers : cstring, mstring;
     import swarm.neo.request.Command : Command;
 
     /// Request code and version (required by ConnectionHandler)
     static immutable Command command = Command(RequestCode.Consume, 4);
 
     /// Request name for stats tracking (required by ConnectionHandler)
-    static immutable istring name = "consume";
+    static immutable string name = "consume";
 
     /// Flag indicating whether timing stats should be generated for
     /// requests of this type

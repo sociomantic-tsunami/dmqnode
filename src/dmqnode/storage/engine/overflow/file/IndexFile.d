@@ -24,7 +24,7 @@ module dmqnode.storage.engine.overflow.file.IndexFile;
 
 import dmqnode.storage.engine.overflow.ChannelMetadata;
 import dmqnode.storage.engine.overflow.file.PosixFile;
-import ocean.meta.types.Qualifiers : cstring, istring;
+import ocean.meta.types.Qualifiers : cstring;
 
 version (D_Version2)
     mixin(`
@@ -182,7 +182,7 @@ class IndexFile: PosixFile
                      * invariant.
                      */
                     channel.validate(channel,
-                        (bool good, istring msg)
+                        (bool good, string msg)
                         {
                             enforceImpl(this.e, good, msg, this.name, nline);
                         });
@@ -239,7 +239,7 @@ class IndexFile: PosixFile
         scope on_channel = (cstring name, ChannelMetadata channel)
         {
             int n = fprintf(this.stream, "%.*s %lu %llu %lld %lld\n".ptr,
-                            name.length, name.ptr,
+                            cast(int)name.length, name.ptr,
                             channel.records, channel.bytes,
                             channel.first_offset, channel.last_offset);
 

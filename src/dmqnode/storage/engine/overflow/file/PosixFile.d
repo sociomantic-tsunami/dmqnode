@@ -20,7 +20,7 @@ class PosixFile
     import ocean.core.TypeConvert : assumeUnique;
     import ocean.core.Verify;
     import ocean.io.FilePath;
-    import ocean.meta.types.Qualifiers : cstring, istring, mstring;
+    import ocean.meta.types.Qualifiers : cstring, mstring;
     import ocean.util.log.Logger;
 
     import core.stdc.errno: EINTR, errno;
@@ -92,7 +92,7 @@ class PosixFile
         mstring mfullname = FilePath.join(dir, name).dup ~ '\0';
         this.fd = this.open(mfullname.ptr);
 
-        istring fullname = assumeUnique(mfullname);
+        string fullname = assumeUnique(mfullname);
         this.namec = fullname.ptr;
         this.name = fullname[0 .. $ - 1];
 
@@ -138,12 +138,12 @@ class PosixFile
     ***************************************************************************/
 
     public ulong seek ( off_t offset, int whence, cstring errmsg,
-                        istring file = __FILE__, long line = __LINE__ )
+                        string file = __FILE__, long line = __LINE__ )
     out (pos)
     {
         assert(pos <= off_t.max);
     }
-    body
+    do
     {
         this.verifyFileOpen();
 
@@ -241,8 +241,8 @@ class PosixFile
 
     ***************************************************************************/
 
-    public void enforce ( T ) ( T ok, cstring msg, istring name = "",
-                                istring file = __FILE__, long line = __LINE__ )
+    public void enforce ( T ) ( T ok, cstring msg, string name = "",
+                                string file = __FILE__, long line = __LINE__ )
     {
         if (!ok)
         {
@@ -307,7 +307,7 @@ class PosixFile
 
     ***************************************************************************/
 
-    protected void verifyFileOpen ( istring file = __FILE__, int line = __LINE__ )
+    protected void verifyFileOpen ( string file = __FILE__, int line = __LINE__ )
     {
         verify(this.fd >= 0, "File " ~ this.name ~ " not opened", file, line);
     }

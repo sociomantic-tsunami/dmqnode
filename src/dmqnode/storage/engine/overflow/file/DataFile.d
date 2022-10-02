@@ -43,7 +43,7 @@ class DataFile: PosixFile
     import unistd = core.sys.posix.unistd: read, write, pread, pwrite;
     import uio = core.sys.posix.sys.uio: iovec, writev;
     import ocean.core.Verify;
-    import ocean.meta.types.Qualifiers : cstring, istring;
+    import ocean.meta.types.Qualifiers : cstring;
 
     /***************************************************************************
 
@@ -104,12 +104,12 @@ class DataFile: PosixFile
 
     public size_t ptransmit ( bool output )
         ( IOVoid!(output)[] data, ref off_t pos, cstring errmsg,
-          istring file = __FILE__, long line = __LINE__ )
+          string file = __FILE__, long line = __LINE__ )
     out (n)
     {
         assert(n <= data.length);
     }
-    body
+    do
     {
         verify(pos >= 0);
 
@@ -161,12 +161,12 @@ class DataFile: PosixFile
 
     public size_t transmit ( bool output )
         ( IOVoid!(output)[] data, cstring errmsg,
-          istring file = __FILE__, long line = __LINE__ )
+          string file = __FILE__, long line = __LINE__ )
     out (n)
     {
         assert(n <= data.length);
     }
-    body
+    do
     {
             static if (output)
                 alias unistd.write op;
@@ -215,7 +215,7 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     public size_t writev ( ref IoVec data, cstring errmsg,
-                           istring file = __FILE__, long line = __LINE__ )
+                           string file = __FILE__, long line = __LINE__ )
     {
         while (data.length)
         {
@@ -259,7 +259,7 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     public ulong truncateHead ( ulong n,
-                                istring file = __FILE__, long line = __LINE__ )
+                                string file = __FILE__, long line = __LINE__ )
     {
         if (n < this.head_truncation_chunk_size)
             return 0;
@@ -299,7 +299,7 @@ class DataFile: PosixFile
     ***************************************************************************/
 
     public void zeroRange ( off_t start, off_t len,
-                            istring file = __FILE__, long line = __LINE__ )
+                            string file = __FILE__, long line = __LINE__ )
     {
         this.allocate(
                 FALLOC_FL.ZERO_RANGE, start, len,
@@ -324,7 +324,7 @@ class DataFile: PosixFile
 
     protected void allocate ( FALLOC_FL mode, off_t offset, off_t len,
                               cstring errmsg,
-                              istring file = __FILE__, long line = __LINE__ )
+                              string file = __FILE__, long line = __LINE__ )
     {
         this.enforce(
             !this.restartInterrupted(.fallocate(this.fd, mode, offset, len)),

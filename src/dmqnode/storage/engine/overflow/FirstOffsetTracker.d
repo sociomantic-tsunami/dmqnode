@@ -113,7 +113,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
             assert(channel.tracker_entry is null);
         }
     }
-    body
+    do
     {
         if (channel.tracker_entry is null)
         {
@@ -156,7 +156,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
     {
         assert(channel.tracker_entry is null);
     }
-    body
+    do
     {
         if (channel.tracker_entry !is null)
         {
@@ -256,7 +256,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
         assert(&channel); // invariant
         assert(channel.tracker_entry !is null);
     }
-    body
+    do
     {
         return nodeToChannel(eb64_next(&channel.tracker_entry.node));
     }
@@ -285,7 +285,7 @@ struct FirstOffsetTracker ( ChannelMetadata )
                    channel.tracker_entry.node.key);
         }
     }
-    body
+    do
     {
         return (ebnode !is null)
             ? cast(ChannelMetadata*)

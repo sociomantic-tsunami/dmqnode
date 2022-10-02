@@ -188,7 +188,7 @@ public class DmqNode
 
      **************************************************************************/
 
-    override protected istring[] record_action_counter_ids ( )
+    override protected string[] record_action_counter_ids ( )
     {
         return ["pushed", "popped"];
     }

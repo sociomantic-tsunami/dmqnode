@@ -17,7 +17,7 @@ module integrationtest.loadfiles.cases.checker.CheckedRequests;
 import dmqproto.client.DmqClient;
 import ocean.task.Task;
 import ocean.core.TypeConvert : assumeUnique;
-import ocean.meta.types.Qualifiers : cstring, istring;
+import ocean.meta.types.Qualifiers : cstring;
 
 /*******************************************************************************
 
@@ -53,7 +53,7 @@ abstract class RecordChecker
 
     ***************************************************************************/
 
-    public istring expected_record_content;
+    public string expected_record_content;
 
     /***************************************************************************
 
@@ -61,7 +61,7 @@ abstract class RecordChecker
 
     ***************************************************************************/
 
-    private istring testname;
+    private string testname;
 
     /***************************************************************************
 
@@ -99,8 +99,8 @@ abstract class RecordChecker
 
     ***************************************************************************/
 
-    protected this ( istring testname, uint n_expected_records,
-                     istring expected_record_content )
+    protected this ( string testname, uint n_expected_records,
+                     string expected_record_content )
     {
         this.waiting_task = Task.getThis();
         assert(this.waiting_task);
@@ -131,7 +131,7 @@ abstract class RecordChecker
 
     ***************************************************************************/
 
-    public void checkNotification ( istring file = __FILE__, int line = __LINE__ )
+    public void checkNotification ( string file = __FILE__, int line = __LINE__ )
     {
         this.unex_notification.check(file, line);
     }
@@ -175,7 +175,7 @@ class UnexpectedNotification
 
     ***************************************************************************/
 
-    private istring testname;
+    private string testname;
 
     /***************************************************************************
 
@@ -183,7 +183,7 @@ class UnexpectedNotification
 
     ***************************************************************************/
 
-    private istring msg;
+    private string msg;
 
     /***************************************************************************
 
@@ -194,7 +194,7 @@ class UnexpectedNotification
 
     ***************************************************************************/
 
-    public this ( istring testname )
+    public this ( string testname )
     {
         this.testname = testname;
     }
@@ -205,7 +205,7 @@ class UnexpectedNotification
 
     ***************************************************************************/
 
-    public void check ( istring file = __FILE__, int line = __LINE__ )
+    public void check ( string file = __FILE__, int line = __LINE__ )
     {
         if (this.msg.length)
             throw new Exception(this.msg, file, line);
@@ -308,9 +308,9 @@ class Consume: RecordChecker
     ***************************************************************************/
 
     public this ( DmqClient dmq, cstring channel, cstring subscriber,
-        uint n_expected_records, istring expected_record_content )
+        uint n_expected_records, string expected_record_content )
     {
-        super(cast(istring)("consume " ~ subscriber ~ "@" ~ channel),
+        super(cast(string)("consume " ~ subscriber ~ "@" ~ channel),
             n_expected_records, expected_record_content);
         this.dmq = dmq;
         this.id = dmq.neo.consume(
@@ -402,9 +402,9 @@ class Pop: RecordChecker
     ***************************************************************************/
 
     public this ( DmqClient dmq, cstring channel, uint n_expected_records,
-        istring expected_record_content )
+        string expected_record_content )
     {
-        super(cast(istring)("pop " ~ channel), n_expected_records,
+        super(cast(string)("pop " ~ channel), n_expected_records,
             expected_record_content);
         for (uint i = 0; i < n_expected_records; i++)
             dmq.neo.pop(channel, &this.notifier);
@@ -482,7 +482,7 @@ class PopEmpty
 
     ***************************************************************************/
 
-    public this ( DmqClient dmq, istring channel )
+    public this ( DmqClient dmq, string channel )
     {
         this.waiting_task = Task.getThis();
         assert(this.waiting_task);
@@ -522,7 +522,7 @@ class PopEmpty
 
     ***************************************************************************/
 
-    public void checkNotification ( istring file = __FILE__, int line = __LINE__ )
+    public void checkNotification ( string file = __FILE__, int line = __LINE__ )
     {
         this.unex_notification.check(file, line);
     }
