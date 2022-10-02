@@ -61,7 +61,7 @@ static this ( )
 
 public class RingNode : StorageChannels
 {
-    import ocean.meta.types.Qualifiers : cstring, istring;
+    import ocean.meta.types.Qualifiers : cstring;
 
     /***************************************************************************
 
@@ -69,7 +69,7 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    static immutable istring DumpFileSuffix = ".rq";
+    static immutable string DumpFileSuffix = ".rq";
 
 
     /***************************************************************************
@@ -118,7 +118,7 @@ public class RingNode : StorageChannels
 
         ***********************************************************************/
 
-        private istring filename;
+        private string filename;
 
 
         /***********************************************************************
@@ -158,7 +158,7 @@ public class RingNode : StorageChannels
 
         public this ( cstring storage_name )
         {
-            enforce(!this.outer.shutting_down, cast(istring)(
+            enforce(!this.outer.shutting_down, cast(string)(
                    "Attempted to create storage '" ~ storage_name ~
                    "' during shutdown"));
 
@@ -201,7 +201,7 @@ public class RingNode : StorageChannels
 
             this.filename = FilePath.join(
                 this.outer.data_dir,
-                cast(istring)(this.storage_name ~ this.outer.DumpFileSuffix)
+                cast(string)(this.storage_name ~ this.outer.DumpFileSuffix)
             );
             this.file_path.set(this.filename);
 
@@ -247,7 +247,7 @@ public class RingNode : StorageChannels
             this.overflow.rename(idup(storage_name));
             this.filename = FilePath.join(
                 this.outer.data_dir,
-                cast(istring)(this.storage_name ~ this.outer.DumpFileSuffix)
+                cast(string)(this.storage_name ~ this.outer.DumpFileSuffix)
             );
             this.file_path.set(this.filename);
         }
@@ -633,13 +633,13 @@ public class RingNode : StorageChannels
 
     ***************************************************************************/
 
-    public this ( istring data_dir, IDmqNodeInfo dmqnode, ulong size_limit,
+    public this ( string data_dir, IDmqNodeInfo dmqnode, ulong size_limit,
                   ChannelSizeConfig channel_size_config )
     in
     {
         assert(dmqnode);
     }
-    body
+    do
     {
         super(size_limit);
 
@@ -709,7 +709,7 @@ public class RingNode : StorageChannels
     override protected Channel create_ ( cstring id )
     {
         enforce(!this.shutting_down,
-            cast(istring)("Cannot create channel '" ~ id ~
+            cast(string)("Cannot create channel '" ~ id ~
             "' while shutting down"));
 
         // During startup this.storage_for_create contains the storage to
@@ -943,7 +943,7 @@ public class RingNode : StorageChannels
             }
             else
                 throw new Channel.AddSubscriberException(
-                    cast(istring)
+                    cast(string)
                     ("Duplicate storage name \"" ~ storage_name ~ '"')
                 );
         }
@@ -1001,7 +1001,7 @@ public class RingNode : StorageChannels
             else
                 enforce!(Channel.AddSubscriberException)(
                     channel.storage_unless_subscribed !is null,
-                    cast(istring)("Found disk overflow channel \"" ~
+                    cast(string)("Found disk overflow channel \"" ~
                     storage_name ~ "\", but the channel has a subscriber")
                 );
         }

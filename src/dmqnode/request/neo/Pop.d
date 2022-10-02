@@ -30,14 +30,14 @@ class PopImpl_v1 : PopProtocol_v1
 {
     import dmqproto.common.RequestCodes : RequestCode;
     import ocean.core.TypeConvert : castFrom, downcast;
-    import ocean.meta.types.Qualifiers : cstring, istring, mstring;
+    import ocean.meta.types.Qualifiers : cstring, mstring;
     import swarm.neo.request.Command : Command;
 
     /// Request code and version (required by ConnectionHandler)
     static immutable Command command = Command(RequestCode.Pop, 1);
 
     /// Request name for stats tracking (required by ConnectionHandler)
-    static immutable istring name = "pop";
+    static immutable string name = "pop";
 
     /// Flag indicating whether timing stats should be generated for
     /// requests of this type
@@ -76,7 +76,7 @@ class PopImpl_v1 : PopProtocol_v1
     {
         assert(!(ok && subscribed));
     }
-    body
+    do
     {
         if (auto channel =
             downcastAssert!(SharedResources.RequestResources)(resources)

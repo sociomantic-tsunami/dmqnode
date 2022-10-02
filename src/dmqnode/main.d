@@ -33,7 +33,6 @@ import ocean.io.select.client.model.ISelectClient;
 import ocean.io.select.EpollSelectDispatcher;
 import ocean.io.select.protocol.generic.ErrnoIOException : IOWarning;
 import ocean.io.select.selector.EpollException;
-import ocean.meta.types.Qualifiers : istring;
 import core.sys.posix.signal: SIGINT, SIGTERM, SIGQUIT;
 import ocean.sys.CpuAffinity;
 import ocean.util.app.DaemonApp;
@@ -66,7 +65,7 @@ static this ( )
 *******************************************************************************/
 
 version (unittest) {} else
-private int main ( istring[] cl_args )
+private int main ( string[] cl_args )
 {
     auto app = new DmqNodeServer;
     return app.main(cl_args);

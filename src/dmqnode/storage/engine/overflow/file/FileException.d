@@ -17,8 +17,6 @@ import ocean.sys.ErrnoException;
 
 class FileException: ErrnoException
 {
-    import ocean.meta.types.Qualifiers : istring;
-
     /***************************************************************************
 
         The name of the file where a failed operation resulted in throwing this
@@ -38,7 +36,7 @@ class FileException: ErrnoException
 
     ***************************************************************************/
 
-    public this ( istring filename )
+    public this ( string filename )
     {
         this.filename = filename;
     }
@@ -57,8 +55,8 @@ class FileException: ErrnoException
 
      **************************************************************************/
 
-    override public typeof(this) set ( int err_num, istring name,
-                                       istring file = __FILE__, int line = __LINE__ )
+    override public typeof(this) set ( int err_num, string name,
+                                       string file = __FILE__, int line = __LINE__ )
     {
         super.set(err_num, name, file, line);
 

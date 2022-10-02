@@ -21,7 +21,6 @@ struct ChannelMetadata
     import Tracker = dmqnode.storage.engine.overflow.FirstOffsetTracker;
 
     import ocean.core.Enforce: enforce;
-    import ocean.meta.types.Qualifiers : istring;
     import core.sys.posix.sys.types: off_t;
 
     /***************************************************************************
@@ -175,7 +174,7 @@ struct ChannelMetadata
     {
         assert(this.records);
     }
-    body
+    do
     {
         enforce(e, this.bytes >= data_length, "pop: channel too short");
         this.bytes -= data_length;
@@ -248,7 +247,7 @@ struct ChannelMetadata
 
     static void validate (
         in typeof(this) channel,
-        scope void delegate ( bool good, istring msg ) check
+        scope void delegate ( bool good, string msg ) check
     )
     {
         switch (channel.records)
@@ -308,7 +307,7 @@ struct ChannelMetadata
 
         assert(!this.last_header.next_offset, "last_header.next expected to be 0");
 
-        validate(this, (bool good, istring msg) {assert(good, msg);});
+        validate(this, (bool good, string msg) {assert(good, msg);});
     }
 
     /***************************************************************************
@@ -328,7 +327,7 @@ struct ChannelMetadata
     {
         assert(&this); // invariant
     }
-    body
+    do
     {
         FirstOffsetTracker.remove(this);
         auto id = this.id;

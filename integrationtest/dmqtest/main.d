@@ -16,7 +16,6 @@ module integrationtest.dmqtest.main;
 
 
 import dmqtest.TestRunner;
-import ocean.meta.types.Qualifiers : istring;
 import turtle.runner.Runner;
 
 
@@ -51,7 +50,7 @@ private class RealDmqTestRunner : DmqTestRunner
     ***************************************************************************/
 
     override protected void configureTestedApplication ( out double delay,
-        out istring[] args, out istring[istring] env )
+        out string[] args, out string[string] env )
     {
         super.configureTestedApplication(delay, args, env);
         args = ["--config=etc/config.ini"];
@@ -65,7 +64,7 @@ private class RealDmqTestRunner : DmqTestRunner
 *******************************************************************************/
 
 version (UnitTest) {} else
-int main ( istring[] args )
+int main ( string[] args )
 {
     return (new TurtleRunner!(RealDmqTestRunner)("dmqnode", "dmqtest.cases"))
         .main(args);

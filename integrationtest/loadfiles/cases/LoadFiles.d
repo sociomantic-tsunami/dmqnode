@@ -48,7 +48,7 @@ class LoadFiles: TestCase
     import ocean.task.Task;
     import Test = ocean.core.Test;
     import ocean.core.TypeConvert : assumeUnique;
-    import ocean.meta.types.Qualifiers : cstring, istring, mstring;
+    import ocean.meta.types.Qualifiers : cstring, mstring;
     import ocean.util.log.Logger;
 
     /***************************************************************************
@@ -180,7 +180,7 @@ class LoadFiles: TestCase
 
         ***********************************************************************/
 
-        istring errmsg;
+        string errmsg;
 
         /***********************************************************************
 

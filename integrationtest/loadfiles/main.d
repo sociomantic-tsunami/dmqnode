@@ -14,7 +14,6 @@ module integrationtest.loadfiles.main;
 
 import integrationtest.loadfiles.cases.LoadFiles;
 import turtle.runner.Runner;
-import ocean.meta.types.Qualifiers : istring;
 import ocean.util.log.Logger;
 
 /*******************************************************************************
@@ -67,7 +66,7 @@ private class LoadFilesTestRunner : TurtleRunnerTask!(TestedAppKind.Daemon)
     ***************************************************************************/
 
     override protected void configureTestedApplication ( out double delay,
-        out istring[] args, out istring[istring] env )
+        out string[] args, out string[string] env )
     {
         delay = 1.0;
         args  = null;
@@ -83,7 +82,7 @@ private class LoadFilesTestRunner : TurtleRunnerTask!(TestedAppKind.Daemon)
 *******************************************************************************/
 
 version (UnitTest) {} else
-int main ( istring[] args )
+int main ( string[] args )
 {
     return (new TurtleRunner!(LoadFilesTestRunner)("dmqnode",
         "integrationtest.loadfiles.cases")).main(args);

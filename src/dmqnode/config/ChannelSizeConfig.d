@@ -19,7 +19,7 @@ public struct ChannelSizeConfig
     import ocean.core.Enforce;
     import ocean.core.ExceptionDefinitions: IllegalArgumentException;
     import ocean.math.Math: min;
-    import ocean.meta.types.Qualifiers : cstring, istring;
+    import ocean.meta.types.Qualifiers : cstring;
 
     /***************************************************************************
 
@@ -36,7 +36,7 @@ public struct ChannelSizeConfig
 
         ***********************************************************************/
 
-        public istring id_prefix;
+        public string id_prefix;
 
         /***********************************************************************
 
@@ -80,7 +80,7 @@ public struct ChannelSizeConfig
 
     ***************************************************************************/
 
-    public void add ( istring id_prefix, ulong size_limit )
+    public void add ( string id_prefix, ulong size_limit )
     {
         enforce!(IllegalArgumentException)(
             id_prefix.length,

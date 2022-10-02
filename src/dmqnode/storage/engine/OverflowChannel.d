@@ -19,15 +19,13 @@ import dmqnode.storage.engine.overflow.RecordHeader;
 
 package class OverflowChannel: DiskOverflowInfo
 {
-    import ocean.meta.types.Qualifiers : istring;
-
     /***************************************************************************
 
         The channel name.
 
     ***************************************************************************/
 
-    private istring name;
+    private string name;
 
     /***************************************************************************
 
@@ -67,7 +65,7 @@ package class OverflowChannel: DiskOverflowInfo
 
     ***********************************************************************/
 
-    package this ( DiskOverflow host, istring channel_name )
+    package this ( DiskOverflow host, string channel_name )
     {
         this.name     = channel_name;
         this.host     = host;
@@ -142,7 +140,7 @@ package class OverflowChannel: DiskOverflowInfo
 
     ***************************************************************************/
 
-    public void rename ( istring new_name )
+    public void rename ( string new_name )
     {
         auto old_name = this.name;
         this.name = new_name;
@@ -207,7 +205,7 @@ package class OverflowChannel: DiskOverflowInfo
     {
         assert(this_);
     }
-    body
+    do
     {
         this_.host.removeChannel(this_.name);
         this_.name = null;
@@ -226,7 +224,7 @@ package class OverflowChannel: DiskOverflowInfo
 
     ***************************************************************************/
 
-    public static void readd ( typeof(this) this_, istring channel_name )
+    public static void readd ( typeof(this) this_, string channel_name )
     in
     {
         assert(this_.name is null);
@@ -236,7 +234,7 @@ package class OverflowChannel: DiskOverflowInfo
     {
         assert(this_);
     }
-    body
+    do
     {
         this_.name     = channel_name;
         this_.metadata = this_.host.getChannel(channel_name);

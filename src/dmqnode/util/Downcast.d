@@ -38,7 +38,7 @@ out (to)
     assert(to, "Unable to cast from \"" ~ From.stringof ~ ":" ~
            (cast(Object)from).classinfo.name ~ "\" to " ~ To.stringof);
 }
-body
+do
 {
     static assert(is(To == class) || is(To == interface));
     static assert(is(From == class) || is(From == interface));

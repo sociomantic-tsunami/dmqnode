@@ -17,7 +17,7 @@
 
 module dmqnode.storage.model.StorageChannels;
 
-import ocean.meta.types.Qualifiers : cstring, istring;
+import ocean.meta.types.Qualifiers : cstring;
 import swarm.node.storage.model.IStorageEngine;
 
 
@@ -54,7 +54,7 @@ abstract class IChannel: IStorageEngine
 
     ***************************************************************************/
 
-    private StorageEngine[istring] subscribers;
+    private StorageEngine[string] subscribers;
 
     /***************************************************************************
 
@@ -157,7 +157,7 @@ abstract class IChannel: IStorageEngine
         cstring storage_name, out cstring subscriber_name
     )
     {
-        if (auto sep_ptr = memchr(storage_name.ptr, '@', storage_name.length))
+        if (auto sep_ptr = cast(const(char)*)memchr(storage_name.ptr, '@', storage_name.length))
         {
             auto sep = sep_ptr - storage_name.ptr;
             subscriber_name = storage_name[0 .. sep];
@@ -186,13 +186,13 @@ abstract class IChannel: IStorageEngine
 
     ***************************************************************************/
 
-    public StorageEngine subscribe ( istring subscriber_name )
+    public StorageEngine subscribe ( string subscriber_name )
     {
         StorageEngine subscriber;
 
-        istring storage_name ( )
+        string storage_name ( )
         {
-            return cast(istring)(subscriber_name ~ "@" ~ this.id_);
+            return cast(string)(subscriber_name ~ "@" ~ this.id_);
         }
 
         if (this.subscribers.length)
@@ -263,7 +263,7 @@ abstract class IChannel: IStorageEngine
         verify(!this.is_reset);
 
         enforce!(AddSubscriberException)(
-            this.initial_storage is null, cast(istring)("Cannot add \"" ~
+            this.initial_storage is null, cast(string)("Cannot add \"" ~
             storage_name ~ "\": Channel \"" ~ this.id_ ~ "\"" ~
             " has no subscribers")
         );
@@ -271,11 +271,11 @@ abstract class IChannel: IStorageEngine
         cstring subscriber_name;
         enforce!(AddSubscriberException)(
             splitSubscriberName(storage_name, subscriber_name) == this.id_,
-            cast(istring)("Channel name in \"" ~ storage_name ~
+            cast(string)("Channel name in \"" ~ storage_name ~
             "\" does not match \"" ~ this.id_ ~ "\"")
         );
         enforce!(AddSubscriberException)(
-            subscriber_name !is null, cast(istring)("Cannot add \"" ~
+            subscriber_name !is null, cast(string)("Cannot add \"" ~
             storage_name ~ "\" as a subscriber: " ~ "No subscriber name")
         );
         if (!(subscriber_name in this.subscribers))
@@ -422,7 +422,7 @@ abstract class IChannel: IStorageEngine
     {
         assert(this.is_reset);
     }
-    body
+    do
     {
         verify(!this.is_reset);
 
@@ -490,7 +490,7 @@ abstract class IChannel: IStorageEngine
     /// Thrown by `addSubscriber`.
     static class AddSubscriberException: Exception
     {
-        this ( istring msg, istring file = __FILE__, int line = __LINE__ )
+        this ( string msg, string file = __FILE__, int line = __LINE__ )
         {
             super(msg, file, line);
         }
@@ -721,7 +721,7 @@ unittest
     // null subscriber name is expected; that is, if storage_name does not
     // contain '@'. If and only if storage_name starts with '@' then an empty
     // non-null subscriber name is expected.
-    static void check ( istring test_name, cstring storage_name,
+    static void check ( string test_name, cstring storage_name,
                         cstring subscriber_name, cstring channel_name )
     {
         auto test = new NamedTest(test_name);

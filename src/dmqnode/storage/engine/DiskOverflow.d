@@ -219,7 +219,7 @@ class DiskOverflow: DiskOverflowInfo
     import core.sys.posix.sys.types: off_t;
     import core.stdc.stdio: SEEK_CUR, SEEK_END;
     import ocean.core.Verify;
-    import ocean.meta.types.Qualifiers : cstring, istring, Unqual;
+    import ocean.meta.types.Qualifiers : cstring, Unqual;
     import ocean.util.log.Logger;
 
     /***************************************************************************
@@ -241,7 +241,7 @@ class DiskOverflow: DiskOverflowInfo
 
         ***********************************************************************/
 
-        public this ( istring channel_name )
+        public this ( string channel_name )
         {
             super(this.outer, channel_name);
         }
@@ -555,7 +555,7 @@ class DiskOverflow: DiskOverflowInfo
     {
         assert(&channel);
     }
-    body
+    do
     {
         off_t pos = this.getPushPosition();
 
@@ -601,7 +601,7 @@ class DiskOverflow: DiskOverflowInfo
          */
         assert(pos >= Constants.datafile_id.length);
     }
-    body
+    do
     {
         /*
          * Pushing a record means appending it to the data file. The file
@@ -653,7 +653,7 @@ class DiskOverflow: DiskOverflowInfo
          */
         assert(last_offset < pos);
     }
-    body
+    do
     {
         /*
          * Update the header of the previously pushed record so that the
@@ -738,7 +738,7 @@ class DiskOverflow: DiskOverflowInfo
     {
         assert(&channel);
     }
-    body
+    do
     {
         if (!channel.records)
         {
@@ -791,7 +791,7 @@ class DiskOverflow: DiskOverflowInfo
         assert(!this.records);
         assert(!this.bytes);
     }
-    body
+    do
     {
         foreach (ref channel; this.channels)
         {
@@ -824,7 +824,7 @@ class DiskOverflow: DiskOverflowInfo
     {
         assert(this);
     }
-    body
+    do
     {
         if (!channel.records) return;
 
@@ -864,12 +864,12 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    package ChannelMetadata* renameChannel ( cstring old_name, istring new_name )
+    package ChannelMetadata* renameChannel ( cstring old_name, string new_name )
     out (channel_metadata)
     {
         assert(channel_metadata);
     }
-    body
+    do
     {
         ChannelMetadata* channel = old_name in this.channels;
         enforce(this.e, channel !is null, "Unable to rename a channel: " ~
@@ -1053,12 +1053,12 @@ class DiskOverflow: DiskOverflowInfo
 
     ***************************************************************************/
 
-    package ChannelMetadata* getChannel ( istring channel_name )
+    package ChannelMetadata* getChannel ( string channel_name )
     out (channel)
     {
         assert(channel);
     }
-    body
+    do
     {
         if (ChannelMetadata* channel = channel_name in this.channels)
         {
@@ -1119,7 +1119,7 @@ class DiskOverflow: DiskOverflowInfo
     {
         assert(this.data);
     }
-    body
+    do
     {
         char[Constants.datafile_id.length] datafile_id;
 
@@ -1393,7 +1393,7 @@ class DiskOverflow: DiskOverflowInfo
     {
         assert(this);
     }
-    body
+    do
     {
         this.index.readLines((cstring channel_name, ChannelMetadata channel, uint nline)
         {

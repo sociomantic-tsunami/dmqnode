@@ -14,15 +14,13 @@ module dmqnode.storage.engine.overflow.Constants;
 
 struct Constants
 {
-    import ocean.meta.types.Qualifiers : istring;
-
     /***************************************************************************
 
         File names and suffices.
 
     ***************************************************************************/
 
-    enum istring
+    enum string
         datafile_suffix  = ".dat",
         datafile_name    = "overflow" ~ datafile_suffix,
         indexfile_suffix = ".csv",

@@ -24,8 +24,6 @@ import ConfigReader = ocean.util.config.ConfigFiller;
 
 public class ServerConfig
 {
-    import ocean.meta.types.Qualifiers : istring;
-
     ConfigReader.Required!(char[]) address;
 
     ConfigReader.Required!(ushort) port;
@@ -38,7 +36,7 @@ public class ServerConfig
 
     ConfigReader.Required!(ConfigReader.Min!(ulong, 1)) channel_size_limit;
 
-    istring data_dir = "data";
+    string data_dir = "data";
 
     uint connection_limit = 5000;
 
